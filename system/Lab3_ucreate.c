@@ -17,7 +17,6 @@ pid32	ucreate(
 	  uint32*   lastargs
 	)
 {
-	int user = 1;
 	uint32		savsp, *pushsp;
 	intmask 	mask;    	/* Interrupt mask		*/
 	pid32		pid;		/* Stores new process id	*/
@@ -37,13 +36,10 @@ pid32	ucreate(
 	}
 
 	/*Lab3 2021201780:Begin*/
-	if(user) {
-		if ( (priority < 1) || ((pid=newpid()) == SYSERR) ||
-			((usaddr = (uint32 *)getstk(ssize)) == (uint32 *)SYSERR) ) {
-			restore(mask);
-			return SYSERR;
-		}
-	}
+    if ((usaddr = (uint32 *)getstk(ssize)) == (uint32 *)SYSERR ) {
+        restore(mask);
+        return SYSERR;
+    }
 	/*Lab3 2021201780:End*/
 
 	prcount++;
@@ -55,7 +51,7 @@ pid32	ucreate(
 	prptr->prstkbase = (char *)saddr;
 	/*Lab3 2021201780:Begin*/
 	prptr->uprstkbase = prptr->uprstkptr = NULL;
-	if(user) prptr->uprstkbase = (char *)usaddr;
+	prptr->uprstkbase = (char *)usaddr;
 	/*Lab3 2021201780:End*/
 	prptr->prstklen = ssize;
 	prptr->prname[PNMLEN-1] = NULLCH;
@@ -77,12 +73,10 @@ pid32	ucreate(
 
     uint32* sp = lastargs;
 	/*Lab3 2021201780:Begin*/
-	if(user) {
-		*usaddr = STACKMAGIC;
-		for ( ; nargs > 0 ; nargs--)
-			*--usaddr = *lastargs--;
-		*--usaddr = (long)u2021201780_ret_u2k;
-	}
+    *usaddr = STACKMAGIC;
+    for ( ; nargs > 0 ; nargs--)
+        *--usaddr = *lastargs--;
+    *--usaddr = (long)u2021201780_ret_u2k;
 	/*Lab3 2021201780:End*/
     lastargs = sp;
 
@@ -92,14 +86,10 @@ pid32	ucreate(
 	*--saddr = (long)INITRET;	/* Push on return address	*/
 
 	/*Lab3 2021201780:Begin*/
-	TSS.ss0 = (0x3 << 3);
-	TSS.esp0 = (long)saddr;
-	if(user) {
-		*--saddr = BASE_USER_SS;
-		*--saddr = (uint32)usaddr;
-		asm("pushfl"); saddr--;
-		*--saddr = BASE_USER_CS;
-	}
+    *--saddr = BASE_USER_SS;
+    *--saddr = (uint32)usaddr;
+    asm("pushfl"); saddr--;
+    *--saddr = BASE_USER_CS;
 	/*Lab3 2021201780:End*/
 
 	/* The following entries on the stack must match what ctxsw	*/
@@ -112,10 +102,8 @@ pid32	ucreate(
 					/*   new process		*/
 
 	/*Lab3 2021201780:Begin*/
-	if(user) {
-		*--saddr = BASE_USER_DS;
-		*--saddr = (long)k2021201780_ret_k2u;
-	}
+    *--saddr = BASE_USER_DS;
+    *--saddr = (long)k2021201780_ret_k2u;
 	/*Lab3 2021201780:End*/
 	*--saddr = savsp;		/* This will be register ebp	*/
 					/*   for process exit		*/
@@ -136,7 +124,7 @@ pid32	ucreate(
 	*--saddr = 0;			/* %edi */
 	*pushsp = (unsigned long) (prptr->prstkptr = (char *)saddr);
 	//Lab3 2021201780
-	if(user)prptr->uprstkptr = (char*)usaddr;
+	prptr->uprstkptr = (char*)usaddr;
 	restore(mask);
 	return pid;
 }

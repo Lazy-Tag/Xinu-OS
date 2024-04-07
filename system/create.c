@@ -14,7 +14,7 @@ pid32	create(
 	  pri16		priority,	/* Process priority > 0		*/
 	  char		*name,		/* Name (for debugging)		*/
 	  //Lab3 2021201780
-	  int       user,
+	  int       user,       /* User process or kernel process */
 	  uint32	nargs,		/* Number of args that follow	*/
 	  ...
 	)
@@ -41,8 +41,7 @@ pid32	create(
 	
 	/*Lab3 2021201780:Begin*/
 	if(user) {
-		if ( (priority < 1) || ((pid=newpid()) == SYSERR) ||
-			((usaddr = (uint32 *)getstk(ssize)) == (uint32 *)SYSERR) ) {
+		if ((usaddr = (uint32 *)getstk(ssize)) == (uint32 *)SYSERR ) {
 			restore(mask);
 			return SYSERR;
 		}
