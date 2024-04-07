@@ -30,7 +30,8 @@ struct __attribute__ ((__packed__)) sd {
 	unsigned char	sd_hibase;
 };
 
-#define	NGD			4	/* Number of global descriptor entries	*/
+// Lab3 2021201780
+#define	NGD			8	/* Number of global descriptor entries	*/
 #define FLAGS_GRANULARITY	0x80
 #define FLAGS_SIZE		0x40
 #define	FLAGS_SETTINGS		(FLAGS_GRANULARITY | FLAGS_SIZE)
@@ -45,6 +46,16 @@ struct sd gdt_copy[NGD] = {
 {       0xffff,          0,           0,      0x92,         0xcf,        0, },
 /* 3rd, Kernel Stack Segment */
 {       0xffff,          0,           0,      0x92,         0xcf,        0, },
+/*Lab3 2021201780:Begin*/
+/* 4th, User Code Segment */
+{       0xffff,          0,           0,      0xfa,         0xcf,        0, },
+/* 5th, User Data Segment */
+{       0xffff,          0,           0,      0xf2,         0xcf,        0, },
+/* 6th, User Stack Segment */
+{       0xffff,          0,           0,      0xf2,         0xcf,        0, },
+/* 7th, TSS*/
+{       0xffff,          0,           0,      0x89,         0x00,        0, },
+/*Lab3 2021201780:End*/
 };
 
 extern	struct	sd gdt[];	/* Global segment table			*/
@@ -171,6 +182,15 @@ void	setsegs()
 	psd = &gdt_copy[3];	/* Kernel stack segment */
 	psd->sd_lolimit = ds_end;
 	psd->sd_hilim_fl = FLAGS_SETTINGS | ((ds_end >> 16) & 0xff);
+
+	/*Lab3 2021201780:Begin*/
+	psd = &gdt_copy[7];	/* TSS segment */
+	psd->sd_lolimit = 0xffff & (sizeof(struct taskstate) - 1);
+	uint32 base = (uint32)&TSS;
+	psd->sd_lobase = base & 0xffff;
+	psd->sd_midbase = (base>>16) & 0xff;
+	psd->sd_hibase = (base>>24) & 0xff;
+	/*Lab3 2021201780:End*/
 
 	memcpy(gdt, gdt_copy, sizeof(gdt_copy));
 }

@@ -469,7 +469,270 @@ _Xint46:
 	pushl	%eax
 	pushl	$46
 	jmp	Xtrap
+/*Lab3 2021201780:Begin*/
+	.globl  _Xint48
+_Xint48:
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
 
+    push %ebx
+	movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+
+LO:
+    cmp %edx, %ecx
+    je L1
+    push (%edx)
+    subl $4, %edx
+    jmp LO
+L1:
+	push %esi
+	push %edi
+	call k2021201780_printf
+    pop %edi
+    pop %esi
+    movl %esi, %eax
+L3:
+    cmp $0, %eax
+    je L4
+    pop %ebx
+    subl $1, %eax
+    jmp L3
+L4:
+    pop %ebx
+
+	popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+	.globl  _Xint49
+_Xint49:
+	jmp userret
+
+	.globl  _Xint50
+_Xint50:
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+    
+    push %ebx
+	movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+
+	push %edi
+	call sleep
+    pop %edi
+
+	pop %ebx
+    popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+	.globl  _Xint51
+_Xint51:
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+	push %ebx
+    movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+
+	push %edi
+    call k2021201780_create
+    pop %edi
+    pop %ebx
+
+    popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+    .globl  _Xint52
+_Xint52:
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+    push %ebx
+	movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+
+	push %edi
+	call sleepms
+    pop %edi
+
+	pop %ebx
+    popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+	.globl  _Xint53
+_Xint53:
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+    push %ebx
+L5:
+    cmp %ecx, %eax
+    je L6
+    push (%ecx)
+    subl $4, %ecx
+    jmp L5
+L6:
+	movl $(0x2 << 3), %eax
+	movw %ax, %ds
+	movw %ax, %es
+	movw %ax, %fs
+	movw %ax, %gs
+
+    push %edx
+	push %esi
+	push %edi
+	call k2021201780_fprintf
+    pop %edi
+    pop %esi
+    pop %edx
+    movl %edx, %eax
+L7:
+    cmp $0, %eax
+    je L8
+    pop %ebx
+    subl $1, %eax
+    jmp L7
+L8:
+    pop %ebx
+	popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+	.globl  _Xint54
+_Xint54:
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+	movl $(0x2 << 3), %eax
+	movw %ax, %ds
+	movw %ax, %es
+	movw %ax, %fs
+	movw %ax, %gs
+
+    push %edx
+	push %esi
+	push %edi
+	call read
+    pop %edi
+    pop %esi
+    pop %edx
+
+	popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+	    .globl  _Xint55
+_Xint55:
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+    push %ebx
+	movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+
+	push %edi
+	call resume
+    pop %edi
+
+	pop %ebx
+    popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+	.globl  _Xint56
+_Xint56:
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+    push %ebx
+	movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+
+	call receive
+
+	pop %ebx
+    popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+	.globl  _Xint57
+_Xint57:
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+    push %ebx
+	movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+
+	call recvclr
+
+	pop %ebx
+    popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+/*Lab3 2021201780:End*/
 
 
 /*------------------------------------------------------------------------
@@ -528,3 +791,15 @@ defevec:
 	.long	_Xint45			/* available for ext. interrupt	*/
 	.long	_Xint46			/* available for ext. interrupt	*/
 	.long	spurious_irq15
+	/*Lab3 2021201780:Begin*/
+	.long	_Xint48			/* my interrupt	for printf*/
+	.long   _Xint49         /* my interrupt	for u2k*/
+	.long   _Xint50         /* my interrupt	for sleep*/
+	.long   _Xint51         /* my interrupt	for create*/
+	.long   _Xint52         /* my interrupt	for sleepms*/
+	.long   _Xint53         /* my interrupt	for fprintf*/
+	.long   _Xint54         /* my interrupt	for read*/
+	.long   _Xint55         /* my interrupt	for resume*/
+	.long   _Xint56         /* my interrupt	for receive*/
+	.long   _Xint57         /* my interrupt	for recvclr*/
+	/*Lab3 2021201780:End*/

@@ -1,6 +1,5 @@
 /* in file addargs.c */
-extern	status	addargs(pid32, int32, int32[], int32,char *, void *);
-
+extern	status	addargs(pid32, int32, int32[], int32, int32, char *, void *);
 
 /* in file ascdate.c */
 extern	status	ascdate(uint32, char *);
@@ -30,7 +29,7 @@ extern	syscall	close(did32);
 extern	syscall	control(did32, int32, int32, int32);
 
 /* in file create.c */
-extern	pid32	create(void *, uint32, pri16, char *, uint32, ...);
+extern	pid32	create(void *, uint32, pri16, char *, int, uint32, ...);
 
 /* in file ctxsw.S */
 extern	void	ctxsw(void *, void *);
@@ -43,7 +42,7 @@ extern int console_init(void);
 
 /* in file evec.c */
 extern	int32	initevec(void);
-extern	int32	set_evec(uint32, uint32);
+extern	int32	set_evec(uint32, uint32, uint16);
 extern	void	trap(int32, long *);
 
 /* in file exception.c */

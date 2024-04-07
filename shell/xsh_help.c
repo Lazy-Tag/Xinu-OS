@@ -29,23 +29,23 @@ shellcmd xsh_help(int nargs, char *args[])
 
 	if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {
 
-		printf("Use:\n");
-		printf("\t%s [command]\n", args[0]);
-		printf("Description:\n");
-		printf("\tProvides a list of shell commands or\n");
-		printf("\thelp information for a specific command\n");
-		printf("Options:\n");
-		printf("\tcommand\tspecific command for which to\n");
-		printf("\t\tdisplay help information\n");
-		printf("\t--help\tdisplay this help and exit\n");
+		u2021201780_printf("Use:\n", 0);
+		u2021201780_printf("\t%s [command]\n", 1, args[0]);
+		u2021201780_printf("Description:\n", 0);
+		u2021201780_printf("\tProvides a list of shell commands or\n", 0);
+		u2021201780_printf("\thelp information for a specific command\n", 0);
+		u2021201780_printf("Options:\n", 0);
+		u2021201780_printf("\tcommand\tspecific command for which to\n", 0);
+		u2021201780_printf("\t\tdisplay help information\n", 0);
+		u2021201780_printf("\t--help\tdisplay this help and exit\n", 0);
 		return 0;
 	}
 
 	/* Check for valid number of arguments */
 
 	if (nargs > 2) {
-		fprintf(stderr, "%s: too many arguments\n", args[0]);
-		fprintf(stderr, "Try '%s --help' for more information\n",
+		u2021201780_fprintf(stderr, "%s: too many arguments\n", 1, args[0]);
+		u2021201780_fprintf(stderr, "Try '%s --help' for more information\n", 1,
 				args[0]);
 		return 1;
 	}
@@ -74,13 +74,13 @@ shellcmd xsh_help(int nargs, char *args[])
 			(*cmdtab[i].cfunc) (2, argv);
 			return 0;
 		}
-		printf("%s: no such command as '%s'\n", args[0], args[1]);
+		u2021201780_printf("%s: no such command as '%s'\n", 2, args[0], args[1]);
 		return 1;
 	}
 
 	/* No arguments -- print a list of shell commands */
 
-	printf("\nshell commands are:\n\n");
+	u2021201780_printf("\nshell commands are:\n\n", 0);
 
 	/* Calculate the maximum length of a command name */
 
@@ -112,13 +112,13 @@ shellcmd xsh_help(int nargs, char *args[])
 	for (i=0; i<lines; i++) {
 		for (j=i; j<ncmd; j+=lines) {
 			len = strnlen(cmdtab[j].cname,80);
-			printf("%s", cmdtab[j].cname);
+			u2021201780_printf("%s", 1, cmdtab[j].cname);
 			while (len < spac) {
-				printf(" ");
+				u2021201780_printf(" ", 0);
 				len++;
 			}
 		}
-		printf("\n");
+		u2021201780_printf("\n", 0);
 	}
 	return 0;
 }

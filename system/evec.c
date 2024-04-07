@@ -33,7 +33,8 @@ uint16	girmask;
 
 #define	EOI	0x20		/* non-specific end of interrupt	*/
 
-#define NID		48	/* Number of interrupt descriptors	*/
+//Lab3 2021201780
+#define NID		58	/* Number of interrupt descriptors	*/
 #define	IGDT_TRAPG	15	/* Trap Gate				*/
 #define	IGDT_INTRG	0xe	/* Interrupt Gate			*/
 
@@ -55,9 +56,14 @@ int32	initevec()
 
 	/* Set default exception vectors */
 
+	/*Lab3 2021201780:Begin*/
 	for(i = 0; i < NID; i++) {
-		set_evec(i, defevec[i]);
+		if(i < history_NID)
+			set_evec(i, defevec[i], 0);
+		else
+			set_evec(i, defevec[i], 3);
 	}
+	/*Lab3 2021201780:End*/
 
 	/* Load the interrupt descriptor table */
 
@@ -92,7 +98,7 @@ int32	initevec()
  * set_evec  -  Set exception vector to point to an exception handler
  *------------------------------------------------------------------------
  */
-int32	set_evec(uint32 xnum, uint32 handler)
+int32	set_evec(uint32 xnum, uint32 handler, uint16 DPL)
 {
 	struct	idt	*pidt;
 
@@ -101,7 +107,8 @@ int32	set_evec(uint32 xnum, uint32 handler)
 	pidt->igd_segsel = 0x8;		/* Kernel code segment */
 	pidt->igd_mbz = 0;
 	pidt->igd_type = IGDT_INTRG;
-	pidt->igd_dpl = 0;
+	//Lab3 2021201780
+	pidt->igd_dpl = DPL;
 	pidt->igd_present = 1;
 	pidt->igd_hoffset = handler >> 16;
 

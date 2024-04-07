@@ -12,13 +12,13 @@ shellcmd xsh_echo(int nargs, char *args[])
 	int32	i;			/* walks through args array	*/
 
 	if (nargs > 1) {
-		printf("%s", args[1]);
+        u2021201780_printf("%s", 1, args[1]);
 
 		for (i = 2; i < nargs; i++) {
-			printf(" %s", args[i]);
+			u2021201780_printf(" %s", 1, args[i]);
 		}
 	}
-	printf("\n");
+    u2021201780_printf("\n", 0);
 
 	return 0;
 }

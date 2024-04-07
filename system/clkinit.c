@@ -17,7 +17,6 @@ void	clkinit(void)
 	/* Allocate a queue to hold the delta list of sleeping processes*/
 
 	sleepq = newqueue();
-
 	/* Initialize the preemption count */
 
 	preempt = QUANTUM;
@@ -27,7 +26,8 @@ void	clkinit(void)
 	clktime = 0;
         count1000 = 0;
 	/* Set interrupt vector for the clock to invoke clkdisp */
-	set_evec(IRQBASE, (uint32)clkdisp);
+	//Lab3 2021201780
+	set_evec(IRQBASE, (uint32)clkdisp, 0);
 
 	outb(CLKCNTL, 0x34);
 

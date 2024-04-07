@@ -32,7 +32,7 @@ void	clkhandler(void)
 			wakeup();
 		}
 	}
-
+	
 	/* Decrement the preemption counter, and reschedule when the */
 	/*   remaining time reaches zero			     */
 

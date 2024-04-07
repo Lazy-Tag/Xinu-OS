@@ -8,8 +8,7 @@
 /* Table of Xinu shell commands and the function associated with each	*/
 /************************************************************************/
 const	struct	cmdent	cmdtab[] = {
-    {"lab2",    FALSE,  xsh_lab2},
-    {"argecho",	TRUE,	xsh_argecho},
+	{"argecho",	TRUE,	xsh_argecho},
 	{"cat",		FALSE,	xsh_cat},
 	{"clear",	TRUE,	xsh_clear},
 	{"date",	FALSE,	xsh_date},
@@ -23,8 +22,9 @@ const	struct	cmdent	cmdtab[] = {
 	{"ps",		FALSE,	xsh_ps},
 	{"sleep",	FALSE,	xsh_sleep},
 	{"uptime",	FALSE,	xsh_uptime},
-	{"?",		FALSE,	xsh_help}
-
+	{"?",		FALSE,	xsh_help},
+	{"lab2",	FALSE,	xsh_lab2},
+	{"lab3",	FALSE,	xsh_lab3}
 };
 
 uint32	ncmd = sizeof(cmdtab) / sizeof(struct cmdent);
@@ -84,11 +84,13 @@ process	shell (
 
 	/* Print shell banner and startup message */
 
-	fprintf(dev, "\n\n%s%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
+    // Lab3 2021201780
+	u2021201780_fprintf(dev, "\n\n%s%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n", 10,
 		SHELL_BAN0,SHELL_BAN1,SHELL_BAN2,SHELL_BAN3,SHELL_BAN4,
 		SHELL_BAN5,SHELL_BAN6,SHELL_BAN7,SHELL_BAN8,SHELL_BAN9);
 
-	fprintf(dev, "%s\n\n", SHELL_STRTMSG);
+    // Lab3 2021201780
+	u2021201780_fprintf(dev, "%s\n\n", 1, SHELL_STRTMSG);
 
 	/* Continually prompt the user, read input, and execute command	*/
 
@@ -96,11 +98,13 @@ process	shell (
 
 		/* Display prompt */
 
-		fprintf(dev, SHELL_PROMPT);
+        // Lab3 2021201780
+		u2021201780_fprintf(dev, SHELL_PROMPT, 0);
 
 		/* Read a command */
 
-		len = read(dev, buf, sizeof(buf));
+        // Lab3 2021201780
+		len = u2021201780_read(dev, buf, sizeof(buf));
 
 		/* Exit gracefully on end-of-file */
 
@@ -123,14 +127,16 @@ process	shell (
 		/* Handle parsing error */
 
 		if (ntok == SYSERR) {
-			fprintf(dev,"%s\n", SHELL_SYNERRMSG);
+            // Lab3 2021201780
+			u2021201780_fprintf(dev,"%s\n", 1, SHELL_SYNERRMSG);
 			continue;
 		}
 
 		/* If line is empty, go to next input line */
 
 		if (ntok == 0) {
-			fprintf(dev, "\n");
+            // Lab3 2021201780
+			u2021201780_fprintf(dev, "\n", 0);
 			continue;
 		}
 
@@ -151,7 +157,8 @@ process	shell (
 		if ( (ntok >=3) && ( (toktyp[ntok-2] == SH_TOK_LESS)
 				   ||(toktyp[ntok-2] == SH_TOK_GREATER))){
 			if (toktyp[ntok-1] != SH_TOK_OTHER) {
-				fprintf(dev,"%s\n", SHELL_SYNERRMSG);
+                // Lab3 2021201780
+				u2021201780_fprintf(dev,"%s\n", 1, SHELL_SYNERRMSG);
 				continue;
 			}
 			if (toktyp[ntok-2] == SH_TOK_LESS) {
@@ -167,18 +174,21 @@ process	shell (
 		if ( (ntok >=3) && ( (toktyp[ntok-2] == SH_TOK_LESS)
 				   ||(toktyp[ntok-2] == SH_TOK_GREATER))){
 			if (toktyp[ntok-1] != SH_TOK_OTHER) {
-				fprintf(dev,"%s\n", SHELL_SYNERRMSG);
+                // Lab3 2021201780
+				u2021201780_fprintf(dev,"%s\n", 1, SHELL_SYNERRMSG);
 				continue;
 			}
 			if (toktyp[ntok-2] == SH_TOK_LESS) {
 				if (inname != NULL) {
-				    fprintf(dev,"%s\n", SHELL_SYNERRMSG);
+                    // Lab3 2021201780
+				    u2021201780_fprintf(dev,"%s\n", 1, SHELL_SYNERRMSG);
 				    continue;
 				}
 				inname = &tokbuf[tok[ntok-1]];
 			} else {
 				if (outname != NULL) {
-				    fprintf(dev,"%s\n", SHELL_SYNERRMSG);
+                    // Lab3 2021201780
+				    u2021201780_fprintf(dev,"%s\n", 1, SHELL_SYNERRMSG);
 				    continue;
 				}
 				outname = &tokbuf[tok[ntok-1]];
@@ -195,7 +205,8 @@ process	shell (
 			}
 		}
 		if ((ntok == 0) || (i < ntok)) {
-			fprintf(dev, SHELL_SYNERRMSG);
+            // Lab3 2021201780
+			u2021201780_fprintf(dev, SHELL_SYNERRMSG, 0);
 			continue;
 		}
 
@@ -225,7 +236,8 @@ process	shell (
 		/* Handle command not found */
 
 		if (j >= ncmd) {
-			fprintf(dev, "command %s not found\n", tokbuf);
+            // Lab3 2021201780
+			u2021201780_fprintf(dev, "command %s not found\n", 1, tokbuf);
 			continue;
 		}
 
@@ -233,7 +245,8 @@ process	shell (
 
 		if (cmdtab[j].cbuiltin) { /* No background or redirect. */
 			if (inname != NULL || outname != NULL || backgnd){
-				fprintf(dev, SHELL_BGERRMSG);
+                // Lab3 2021201780
+				u2021201780_fprintf(dev, SHELL_BGERRMSG, 0);
 				continue;
 			} else {
 				/* Set up arg vector for call */
@@ -264,7 +277,10 @@ process	shell (
 		if (outname != NULL) {
 			stdoutput = open(NAMESPACE,outname,"w");
 			if (stdoutput == SYSERR) {
-				fprintf(dev, SHELL_OUTERRMSG, outname);
+                /* Lab3 2021201780:Begin*/
+				u2021201780_fprintf(dev, SHELL_OUTERRMSG, 0);
+                u2021201780_fprintf(dev, outname, 0);
+                /* Lab3 2021201780:End*/
 				continue;
 			} else {
 				control(stdoutput, F_CTL_TRUNC, 0, 0);
@@ -272,18 +288,32 @@ process	shell (
 		}
 
 		/* Spawn child thread for non-built-in commands */
+		/*Lab3 2021201780:Begin*/
+		if(strcmp(cmdtab[j].cname,"lab3") == 0
+            || strcmp(cmdtab[j].cname,"echo") == 0
+            || strcmp(cmdtab[j].cname,"ps") == 0
+            || strcmp(cmdtab[j].cname,"help") == 0) {
+			child = create(cmdtab[j].cfunc,
+				SHELL_CMDSTK, SHELL_CMDPRIO,
+				cmdtab[j].cname, USER_LEVEL, 2, ntok, &tmparg);
 
-		child = create(cmdtab[j].cfunc,
-			SHELL_CMDSTK, SHELL_CMDPRIO,
-			cmdtab[j].cname, 2, ntok, &tmparg);
+            if ((child == SYSERR) ||
+                (addargs(child, ntok, tok, tlen, USER_LEVEL, tokbuf, &tmparg)
+                                == SYSERR) ) {
+                u2021201780_fprintf(dev, SHELL_CREATMSG, 0);
+                continue;
+            }
+		} else {
+			child = create(cmdtab[j].cfunc,
+				SHELL_CMDSTK, SHELL_CMDPRIO,
+				cmdtab[j].cname, KENRAL_LEVEL, 2, ntok, &tmparg);
 
-		/* If creation or argument copy fails, report error */
-
-		if ((child == SYSERR) ||
-		    (addargs(child, ntok, tok, tlen, tokbuf, &tmparg)
-							== SYSERR) ) {
-			fprintf(dev, SHELL_CREATMSG);
-			continue;
+            if ((child == SYSERR) ||
+                (addargs(child, ntok, tok, tlen, KENRAL_LEVEL, tokbuf, &tmparg)
+                                == SYSERR) ) {
+                u2021201780_fprintf(dev, SHELL_CREATMSG, 0);
+                continue;
+            }
 		}
 
 		/* Set stdinput and stdoutput in child to redirect I/O */
@@ -291,18 +321,20 @@ process	shell (
 		proctab[child].prdesc[0] = stdinput;
 		proctab[child].prdesc[1] = stdoutput;
 
-		msg = recvclr();
-		resume(child);
+		msg = u2021201780_recvclr();
+		u2021201780_resume(child);
 		if (! backgnd) {
-			msg = receive();
+			msg = u2021201780_receive();
 			while (msg != child) {
-				msg = receive();
+				msg = u2021201780_receive();
 			}
 		}
+        /*Lab3 2021201780:End*/
     }
 
     /* Terminate the shell process by returning from the top level */
 
-    fprintf(dev,SHELL_EXITMSG);
+    // Lab3 2021201780
+    u2021201780_fprintf(dev,SHELL_EXITMSG, 0);
     return OK;
 }

@@ -41,9 +41,15 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	ptnew = &proctab[currpid];
 	ptnew->prstate = PR_CURR;
 	preempt = QUANTUM;		/* Reset time slice for process	*/
-	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 
-	/* Old process returns here when resumed */
+	/*Lab3 2021201780:Begin*/
+    TSS.ss0 = (0x3 << 3);
+    TSS.esp0 = (long) ptnew->prstkptr;
+    /*Lab3 2021201780:Begin*/
+
+    ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
+
+    /* Old process returns here when resumed */
 
 	return;
 }

@@ -2,38 +2,39 @@
 
 #include <xinu.h>
 
-void sndA(void);
-void sndB(void);
+void sndA() {
+	while(1) {
+		putc(CONSOLE, 'A');
+	}
+}
 
-process main(void)
+void sndB() {
+	while(1) {
+		putc(CONSOLE, 'B');
+	}
+}
+
+process	main(void)
 {
-    // struct  procent *prptr = &proctab[getpid()];
-    // prptr->prprio = 20;
-    // resume(create(sndA, 1024, 20, "process 1", 0));
-    // resume(create(sndB, 1024, 20, "process 2", 0));
-    /* Run the Xinu shell */
 
-    recvclr();
-    resume(create(shell, 8192, 50, "shell", 1, CONSOLE));
-    /* Wait for shell to exit and recreate it */
+	/* Run the Xinu shell */
+    /*Lab3 2021201780:Begin*/
+	u2021201780_recvclr();
+    u2021201780_resume(u2021201780_create(shell, 8192, 50, "shell", 1, CONSOLE));
 
-    while (TRUE) {
-        receive();
-        sleepms(200);
-        kprintf("\n\nMain process recreating shell\n\n");
-        resume(create(shell, 4096, 20, "shell", 1, CONSOLE));
-    }
-  return OK;
+	//resume(create(sndA, 4096, 20, "processA", 1, CONSOLE));
+	//resume(create(sndB, 4096, 20, "processB", 1, CONSOLE));
+
+	/* Wait for shell to exit and recreate it */
+
+	while (TRUE) {
+		u2021201780_receive();
+		u2021201780_sleepms(200);
+		u2021201780_printf("\n\nMain process recreating shell\n\n", 0);
+		u2021201780_resume(u2021201780_create(shell, 4096, 20, "shell", 1, CONSOLE));
+	}
+
+    /*Lab3 2021201780:End*/
+	return OK;
+    
 }
-
-void sndA(void) {
-    kprintf("\n2021201780\nBowen Hu\nsndA\n");
-    while(1) { putc(CONSOLE, 'A');}
-}
-
-void sndB(void) {
-    kprintf("\n2021201780\nBowen Hu\nsndB\n");
-    while(1) { putc(CONSOLE, 'B');}
-}
-
-
