@@ -31,7 +31,7 @@ process	main(void)
 		u2021201780_receive();
 		u2021201780_sleepms(200);
 		u2021201780_printf("\n\nMain process recreating shell\n\n", 0);
-		u2021201780_resume(u2021201780_create(shell, 4096, 20, "shell", 1, CONSOLE));
+		u2021201780_resume(u2021201780_create(shell, 4096, 20, "shell", CONSOLE));
 	}
 
     /*Lab3 2021201780:End*/

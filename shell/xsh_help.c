@@ -112,10 +112,10 @@ shellcmd xsh_help(int nargs, char *args[])
 	for (i=0; i<lines; i++) {
 		for (j=i; j<ncmd; j+=lines) {
 			len = strnlen(cmdtab[j].cname,80);
-			u2021201780_printf("%s", 1, cmdtab[j].cname);
-			while (len < spac) {
-				u2021201780_printf(" ", 0);
-				len++;
+			u2021201780_printf("%s ", 1, cmdtab[j].cname);
+			while (len < spac / 2) {
+				u2021201780_printf("  ", 0);
+				len += 2;
 			}
 		}
 		u2021201780_printf("\n", 0);

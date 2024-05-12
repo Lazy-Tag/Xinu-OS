@@ -21,6 +21,11 @@ ctxsw:
 		movl	12(%ebp),%eax	/* Get location from which to	*/
 					/*   restore new process's SP	*/
 
+        /* Lab4 2021201780:begin */
+		movl	16(%ebp), %ebx
+		movl	%ebx, %cr3
+		/* Lab4 2021201780:end */
+
 		/* The next instruction switches from the old process's	*/
 		/*   stack to the new process's stack.			*/
 

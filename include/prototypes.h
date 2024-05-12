@@ -1,5 +1,5 @@
 /* in file addargs.c */
-extern	status	addargs(pid32, int32, int32[], int32, int32, char *, void *);
+extern	status	addargs(pid32, int32, int32[], int32, char *, void *);
 
 /* in file ascdate.c */
 extern	status	ascdate(uint32, char *);
@@ -29,10 +29,10 @@ extern	syscall	close(did32);
 extern	syscall	control(did32, int32, int32, int32);
 
 /* in file create.c */
-extern	pid32	create(void *, uint32, pri16, char *, int, uint32, ...);
+extern	pid32	create(void *, uint32, pri16, char *, uint32, ...);
 
 /* in file ctxsw.S */
-extern	void	ctxsw(void *, void *);
+extern	void	ctxsw(void *, void *, uint32);
 
 /* in file exit.c */
 extern	void	exit(void);
@@ -74,8 +74,9 @@ extern	pid32	getpid(void);
 /* in file getprio.c */
 extern	syscall	getprio(pid32);
 
+// Lab4: 2021201780
 /* in file getstk.c */
-extern	char	*getstk(uint32);
+extern	char	*getstk(uint32, pgtab*, int);
 
 /* in file getticks.c */
 extern	uint64	getticks(void);

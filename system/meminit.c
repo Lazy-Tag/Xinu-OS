@@ -60,29 +60,25 @@ struct sd gdt_copy[NGD] = {
 
 extern	struct	sd gdt[];	/* Global segment table			*/
 
+/* Lab4 2021201780:Begin*/
+uint32	*freelist;
+extern	pgtab	*kpgdir;	/* Kernel page table directory	*/
+pgtab	*kpg[2];		/* Kernel page table		*/
+
+pgtab	*pgdir = (pgtab *)0x00802000;
+/* Lab4 2021201780:End*/
+
 /*------------------------------------------------------------------------
- * meminit - initialize memory bounds and the free memory list
+ * vminit - vminit - initialize virtual memory bounds and the free memory list
  *------------------------------------------------------------------------
  */
-void	meminit(void) {
-
-	struct	memblk	*memptr;	/* Ptr to memory block		*/
+ /*Lab4 2021201780:Begin*/
+void	vminit(void) {
 	struct	mbmregion	*mmap_addr;	/* Ptr to mmap entries		*/
 	struct	mbmregion	*mmap_addrend;	/* Ptr to end of mmap region	*/
-	struct	memblk	*next_memptr;	/* Ptr to next memory block	*/
-	uint32	next_block_length;	/* Size of next memory block	*/
 
-	mmap_addr = (struct mbmregion*)NULL;
-	mmap_addrend = (struct mbmregion*)NULL;
-
-	/* Initialize the free list */
-	memptr = &memlist;
-	memptr->mnext = (struct memblk *)NULL;
-	memptr->mlength = 0;
-
-	/* Initialize the memory counters */
-	/*    Heap starts at the end of Xinu image */
-	minheap = (void*)&end;
+	// set the heap to the kernal stack
+	minheap = (void*)((uint32)&end + 0x802000);
 	maxheap = minheap;
 
 	/* Check if Xinu was loaded using the multiboot specification	*/
@@ -100,7 +96,8 @@ void	meminit(void) {
 	/* Calculate address that follows the mmap block */
 	mmap_addrend = (struct mbmregion*)((uint8*)mmap_addr + bootinfo->mmap_length);
 
-	/* Read mmap blocks and initialize the Xinu free memory list	*/
+    /* Read mmap blocks and initialize the Xinu free memory list	*/
+	uint32 flist_addr = (uint32)&end + 8192;
 	while(mmap_addr < mmap_addrend) {
 
 		/* If block is not usable, skip to next block */
@@ -121,40 +118,60 @@ void	meminit(void) {
 
 		/* The block is usable, so add it to Xinu's memory list */
 
-		/* This block straddles the end of the Xinu image */
-		if((mmap_addr->base_addr <= (uint32)minheap) &&
-		  ((mmap_addr->base_addr + mmap_addr->length) >
-		  (uint32)minheap)) {
-
-			/* This is the first free block, base address is the minheap */
-			next_memptr = (struct memblk *)roundmb(minheap);
-
-			/* Subtract Xinu image from length of block */
-			next_block_length = (uint32)truncmb(mmap_addr->base_addr + mmap_addr->length - (uint32)minheap);
-		} else {
-
-			/* Handle a free memory block other than the first one */
-			next_memptr = (struct memblk *)roundmb(mmap_addr->base_addr);
-
-			/* Initialize the length of the block */
-			next_block_length = (uint32)truncmb(mmap_addr->length);
+		uint32 page_start = roundpg(mmap_addr->base_addr);
+		while (page_start < truncpg(mmap_addr->base_addr + mmap_addr->length)) {
+			uint32 rec_addr = ph2recpg(page_start);
+			uint32 *rec_phyaddr = (uint32 *)(rec_addr - 0x400000 + flist_addr);
+			*rec_phyaddr = (uint32)freelist;
+			freelist = (uint32 *)rec_addr;
+			page_start += PAGE_SIZE;
 		}
-
-		/* Add then new block to the free list */
-		memptr->mnext = next_memptr;
-		memptr = memptr->mnext;
-		memptr->mlength = next_block_length;
-		memlist.mlength += next_block_length;
 
 		/* Move to the next mmap block */
 		mmap_addr = (struct mbmregion*)((uint8*)mmap_addr + mmap_addr->size + 4);
 	}
 
-	/* End of all mmap blocks, and so end of Xinu free list */
-	if(memptr) {
-		memptr->mnext = (struct memblk *)NULL;
+	int i;
+	kpgdir = (pgtab *)(flist_addr + 0x400000);	/* end+8KB+4MB	*/
+	kpg[0] = kpgdir + 1;
+	kpg[1] = kpgdir + 2;
+
+	proctab[NULLPROC].prpgdir = (uint32)kpgdir;
+
+	// initialize kpgdir(global page table)
+	kpgdir->entry[0] = (uint32)kpg[0] | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
+	kpgdir->entry[1] = (uint32)kpg[1] | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
+	kpgdir->entry[2] = (uint32)kpgdir | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
+	for (i = 3; i < PT_NENTRY; i++) {
+		kpgdir->entry[i] = 0;
 	}
+
+	// initialize kernal page table[0]
+	uint32 npage_code = (uint32)&end / PAGE_SIZE;
+	memset((void *)kpg[0]->entry, 0, sizeof(pgtab));
+	for (i = 0; i < npage_code; i++) {
+		uint32 page_start = i << 12;
+		if (page_start < (1 << 20)) {	/* I/O mapping		*/
+			kpg[0]->entry[i] = page_start | PT_ENTRY_P | PT_ENTRY_W;
+		}
+		else if (i < npage_code) {	/* Xinu code and data	*/
+			kpg[0]->entry[i] = page_start | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
+		}
+	}
+	kpg[0]->entry[i] = (i << 12);
+	kpg[0]->entry[i + 1] = ((i + 1) << 12) | PT_ENTRY_P | PT_ENTRY_W;
+
+	// initialize kernal page table[1]
+	for (i = 0; i < PT_NENTRY; i++) {
+		uint32 page_start = flist_addr + (i << 12);
+		kpg[1]->entry[i] = page_start | PT_ENTRY_P | PT_ENTRY_W;
+	}
+
+	// redirect to the user stack
+	minheap = (void *)0x00C00000;
+	maxheap = (void *)0xFE000000;
 }
+ /*Lab4 2021201780:End*/
 
 
 /*------------------------------------------------------------------------

@@ -56,6 +56,11 @@ struct procent {		/* Entry in the process table		*/
     char	*uprstkptr;	/* Base of temporary stack		*/
     char	*uprstkbase;	/* Base of user stack		*/
     /*Lab3 2021201780:End*/
+
+    /*Lab4 2021201780:Begin*/
+    char	*prkstp;    /* Kernel stack pointer		*/
+    uint32  prpgdir;    /* Page directory base address */
+    /*Lab4 2021201780:End*/
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

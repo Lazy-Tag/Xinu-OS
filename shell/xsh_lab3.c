@@ -35,7 +35,7 @@ pid32 k2021201780_create(uint32* str) {
     char* name = (char*)(*str++);
     uint32 nargs = (uint32)(*str++);
     int cnt = nargs - 1;
-    while(cnt--)
+    while(cnt-- > 0)
         str++;
     pid32 pid = ucreate(func, size, pri, name, nargs, str);
     resume(pid);
@@ -44,9 +44,10 @@ pid32 k2021201780_create(uint32* str) {
 
 void u2021201780_uptest(int a, int b) {
     int pid = getpid();
-    u2021201780_printf("proc=%d a=%d\n", 2, pid, a);
+    struct procent *prptr = &proctab[pid];
+    u2021201780_printf("name: %s proc=%d a=%d\n", 3, prptr->prname, pid, a);
     u2021201780_sleep(1);
-    u2021201780_printf("proc=%d b=%d\n", 2, pid, b);
+    u2021201780_printf("name: %s proc=%d a=%d\n", 3, prptr->prname, pid, b);
 }
 
 shellcmd xsh_lab3(int argc, char* argv[]) {

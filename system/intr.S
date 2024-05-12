@@ -734,6 +734,43 @@ _Xint57:
 
 /*Lab3 2021201780:End*/
 
+/*Lab4 2021201780:Begin*/
+	.globl  _Xint58			/* Syscalls			*/
+_Xint58:
+    pushl %ds
+    pushl %es
+    pushl %fs
+    pushl %gs
+
+    push %ebx
+    movl $(0x2 << 3), %ebx
+    movw %bx, %ds
+    movw %bx, %es
+    movw %bx, %fs
+    movw %bx, %gs
+
+    movl $6, %eax
+    addl $20, %edi
+    movl %eax, %ebx
+L9:
+    testl %eax, %eax
+    je L10
+    pushl (%edi)
+    subl $4, %edi
+    subl $1, %eax
+    jmp L9
+L10:
+    call addargs
+    leal	(%esp, %ebx, 4), %esp
+    pop %ebx
+
+    popl %gs
+    popl %fs
+    popl %es
+    popl %ds
+    iret
+/*Lab4 2021201780:End*/
+
 
 /*------------------------------------------------------------------------
  * _Xint? - array of exception/interrupt entry points that are
@@ -803,3 +840,5 @@ defevec:
 	.long   _Xint56         /* my interrupt	for receive*/
 	.long   _Xint57         /* my interrupt	for recvclr*/
 	/*Lab3 2021201780:End*/
+	//Lab4 2021201780
+	.long   _Xint58

@@ -44,10 +44,10 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 	/*Lab3 2021201780:Begin*/
     TSS.ss0 = (0x3 << 3);
-    TSS.esp0 = (long) ptnew->prstkptr;
+    TSS.esp0 = (long) ptnew->prkstp;
     /*Lab3 2021201780:Begin*/
 
-    ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
+    ctxsw(&ptold->prstkptr, &ptnew->prstkptr, ptnew->prpgdir);
 
     /* Old process returns here when resumed */
 
