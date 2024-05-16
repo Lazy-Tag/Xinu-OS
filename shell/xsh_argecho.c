@@ -11,11 +11,11 @@ shellcmd xsh_argecho(int nargs, char *args[])
 {
 	int32	i;
 
-	printf("\n\nThe %d arguments are:\n", nargs);
+	u2021201780_printf("\n\nThe %d arguments are:\n", 1, nargs);
 	for (i = 0; i < nargs; i++) {
-		printf("    %2d: %s\n", i, args[i]);
+		u2021201780_printf("    %2d: %s\n", 2, i, args[i]);
 	}
-	printf("\n");
+	u2021201780_printf("\n", 0);
 
 	return 0;
 }

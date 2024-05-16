@@ -6,7 +6,7 @@
  *  getmem  -  Allocate heap storage, returning lowest word address
  *------------------------------------------------------------------------
  */
-char  	*getmem(
+void 	*getmem(
 	  uint32	nbytes		/* Size of memory requested	*/
 	)
 {
@@ -29,8 +29,8 @@ char  	*getmem(
 	if (mem_begin != (char *)SYSERR) {
 		for (int i = 0; i < npages; i++) {
 			char* page_log = mem_begin + i * PAGE_SIZE;
-			uint32 page_phy = palloc();
-			fill_pgentry(page_log, page_phy, PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U, FALSE);
+			uint32 page_phy = physical_addr_alloc();
+			fill_page_entry(page_log, page_phy, PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U, FALSE);
 		}
 	}
 

@@ -36,47 +36,55 @@ pid32 create(
         restore(mask);
         return SYSERR;
     }
-    pgtab *newpgdir = (pgtab *) getmem(PAGE_SIZE);
-    if (newpgdir == (pgtab *) SYSERR) {
+    // initialize page directory
+//    kprintf("***initialize page directory...***\n");
+    pgtab *_pgdir = (pgtab *) getmem(PAGE_SIZE);
+    if (_pgdir == (pgtab *) SYSERR) {
         restore(mask);
         return SYSERR;
     }
-    memset((void *) newpgdir, 0, PAGE_SIZE);
+    memset((void *) _pgdir, 0, PAGE_SIZE);
 
     pgtab *newpt0, *oldpt0, *newptx;
+//    kprintf("***initialize page table 0...***\n");
     newpt0 = (pgtab *) getmem(PAGE_SIZE);
     if (newpt0 == (pgtab *) SYSERR) {
-        freemem((char *) newpgdir, PAGE_SIZE);
+        freemem((char *) _pgdir, PAGE_SIZE);
         restore(mask);
         return SYSERR;
     }
     oldpt0 = (pgtab *) 0x800000;
     for (i = 0; i < PT_NENTRY; ++i)
         newpt0->entry[i] = oldpt0->entry[i];
+
+//    kprintf("***initialize page table X...***\n");
     newptx = (pgtab *) getmem(PAGE_SIZE);
     if (newptx == (pgtab *) SYSERR) {
-        freemem((char *) newpgdir, PAGE_SIZE);
+        freemem((char *) _pgdir, PAGE_SIZE);
         freemem((char *) newpt0, PAGE_SIZE);
         restore(mask);
         return SYSERR;
     }
     memset((void *) newptx, 0, PAGE_SIZE);
-    newpgdir->entry[0] = log2ph((char *) newpt0) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
-    newpgdir->entry[1] = pgdir->entry[1];
-    newpgdir->entry[2] = log2ph((char *) newpgdir) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
-    newpgdir->entry[1015] = log2ph((char *) newptx) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
+    _pgdir->entry[0] = log2ph((char *) newpt0) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
+    _pgdir->entry[1] = pgdir->entry[1];
+    _pgdir->entry[2] = log2ph((char *) _pgdir) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
+    _pgdir->entry[USERPG] = log2ph((char *) newptx) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
 
+//    kprintf("***initialize kernel stack...***\n");
     saddr = (uint32 *) getstk(KERNELSTK, newpt0, TRUE);
     if (saddr == (uint32 *) SYSERR) {
-        freemem((char *) newpgdir, PAGE_SIZE);
+        freemem((char *) _pgdir, PAGE_SIZE);
         freemem((char *) newpt0, PAGE_SIZE);
         freemem((char *) newptx, PAGE_SIZE);
         restore(mask);
         return SYSERR;
     }
+
+//    kprintf("***initialize user stack...***\n");
     usaddr = (uint32 *) getstk(ssize, newptx, FALSE);
     if (usaddr == (uint32 *) SYSERR) {
-        freemem((char *) newpgdir, PAGE_SIZE);
+        freemem((char *) _pgdir, PAGE_SIZE);
         freemem((char *) newpt0, PAGE_SIZE);
         freemem((char *) newptx, PAGE_SIZE);
         freestk((char *) saddr, KERNELSTK);
@@ -97,13 +105,14 @@ pid32 create(
     prptr->uprstkbase = (char *) usaddr;
     /*Lab3 2021201780:End*/
     //Lab4 2021201780
-    prptr->prpgdir = log2ph((char *)newpgdir);
+    prptr->prpgdir = log2ph((char *)_pgdir);
     prptr->prstklen = ssize;
     prptr->prname[PNMLEN - 1] = NULLCH;
     for (i = 0; i < PNMLEN - 1 && (prptr->prname[i] = name[i]) != NULLCH; i++);
     prptr->prsem = -1;
     prptr->prparent = (pid32) getpid();
     prptr->prhasmsg = FALSE;
+    prptr->upgtable = log2ph((char *)newptx);
 
     /* Set up stdin, stdout, and stderr descriptors for the shell	*/
     prptr->prdesc[0] = CONSOLE;
@@ -126,11 +135,11 @@ pid32 create(
     /* Push arguments */
     a = (uint32 * )(&nargs + 1);    /* Start of args		*/
     a += nargs - 1;            /* Last argument		*/
-    for (; nargs > 0; nargs--)    /* Machine dependent; copy args	*/
+    for (i = nargs ; i > 0 ; i--)    /* Machine dependent; copy args	*/
         *--saddr = *a--;    /* onto created process's stack	*/
     *--saddr = (long) INITRET;    /* Push on return address	*/
-
     prptr->prkstp = (char *)(KSTKBASE - ((uint32)prptr->prstkbase - (uint32)(saddr)));
+
     /*Lab3 2021201780:Begin*/
     *--saddr = BASE_USER_SS;
     *--saddr = (uint32) usaddr;
@@ -168,21 +177,21 @@ pid32 create(
     prptr->prstkptr = (char *)(KSTKBASE - ((uint32)prptr->prstkbase - (uint32)(saddr)));
 	*pushsp = (uint32)prptr->prstkptr;
 
-	fill_pgentry((char *)newpgdir, 0, 0, TRUE);
-	invlpg((void *)newpgdir);
-	fill_pgentry((char *)newpt0, 0, 0, TRUE);
+	fill_page_entry((char *)_pgdir, 0, 0, TRUE);
+	invlpg((void *)_pgdir);
+	fill_page_entry((char *)newpt0, 0, 0, TRUE);
 	invlpg((void *)newpt0);
-	fill_pgentry((char *)newptx, 0, 0, TRUE);
+	fill_page_entry((char *)newptx, 0, 0, TRUE);
 	invlpg((void *)newptx);
 
-	for (i = KERNELSTK - PAGE_SIZE; i >= 0; i -= PAGE_SIZE) {
-		fill_pgentry(prptr->prstkbase - i, 0, 0, TRUE);
-		invlpg((void *)(prptr->prstkbase - i));
+	for (i = 0; i < KERNELSTK; i += PAGE_SIZE) {
+		fill_page_entry(prptr->prstkbase + i, 0, 0, TRUE);
+		invlpg((void *)(prptr->prstkbase + i));
 	}
 
-    for (i = ssize - PAGE_SIZE; i >= 0; i -= PAGE_SIZE) {
-        fill_pgentry(prptr->uprstkbase - i, 0, 0, TRUE);
-        invlpg((void *) (prptr->uprstkbase - i));
+    for (i = 0; i < ssize; i += PAGE_SIZE) {
+        fill_page_entry(prptr->uprstkbase + i, 0, 0, FALSE);
+        invlpg((void *) (prptr->uprstkbase + i));
     }
 
     prptr->prstkbase = (char *) KSTKBASE;

@@ -40,17 +40,17 @@ syscall	kill(
 		cur_pgtable = (pgtab *)(0x00800000 + (i << 12));
 		for (j = 0; j < PT_NENTRY; j++) {
 			if (cur_pgtable->entry[j] & PT_ENTRY_P) {
-				pfree(getaddr(cur_pgtable->entry[j]));
+				physical_addr_free(getaddr(cur_pgtable->entry[j]));
 			}
 		}
-		pfree(getaddr(pgdir->entry[i]));
+		physical_addr_free(getaddr(pgdir->entry[i]));
 	}
 	/* Kernel stack */
 	j = (uint32)&end / PAGE_SIZE + 1;
 	cur_pgtable = (pgtab *)0x00800000;
-	pfree(getaddr(cur_pgtable->entry[j]));
-	pfree(getaddr(pgdir->entry[0]));
-	pfree(prptr->prpgdir);
+	physical_addr_free(getaddr(cur_pgtable->entry[j]));
+	physical_addr_free(getaddr(pgdir->entry[0]));
+	physical_addr_free(prptr->prpgdir);
     /* Lab4 2021201780:end */
 
 	switch (prptr->prstate) {

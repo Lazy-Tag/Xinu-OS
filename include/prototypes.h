@@ -66,7 +66,7 @@ extern	pid32	getlast(qid16);
 extern	pid32	getitem(pid32);
 
 /* in file getmem.c */
-extern	char	*getmem(uint32);
+extern	void	*getmem(uint32);
 
 /* in file getpid.c */
 extern	pid32	getpid(void);

@@ -56,7 +56,7 @@
 #define	IDT_BYTES		(IDT_ENTRIES * IDT_ENTRY_SIZE)
 #define NULLSTK			(8192)		/* This must match NULLSTK defined in kernel.h 		*/
 
-//Lab4 2020200671
+//Lab4 2021201780
 #define CR0_PG			0x80000000
 #define CR0_WP			0x00010000
 

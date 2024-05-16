@@ -58,8 +58,9 @@ struct procent {		/* Entry in the process table		*/
     /*Lab3 2021201780:End*/
 
     /*Lab4 2021201780:Begin*/
-    char	*prkstp;    /* Kernel stack pointer		*/
     uint32  prpgdir;    /* Page directory base address */
+    uint32  prkstp;    /* Kernel stack pointer */
+    uint32  upgtable;  /* Page table base address */
     /*Lab4 2021201780:End*/
 };
 

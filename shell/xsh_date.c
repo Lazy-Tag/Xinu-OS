@@ -17,24 +17,24 @@ shellcmd xsh_date(int nargs, char *args[]) {
 	/* Output info for '--help' argument */
 
 	if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {
-		printf("Usage: %s\n\n", args[0]);
-		printf("Description:\n");
-		printf("\tDisplays the current date and time\n");
-		printf("Options (one per invocation):\n");
-		printf("\t-f\tforce a time server request to be sent\n");
-		printf("\t-d\tset daylight savings time on\n");
-		printf("\t-s\tset standard time (not daylight savings)\n");
-		printf("\t-a\tset daylight savings to automatic\n");
-		printf("\t--help\tdisplay this help and exit\n");
+		u2021201780_printf("Usage: %s\n\n", 1, args[0]);
+		u2021201780_printf("Description:\n", 0);
+		u2021201780_printf("\tDisplays the current date and time\n", 0);
+		u2021201780_printf("Options (one per invocation):\n", 0);
+		u2021201780_printf("\t-f\tforce a time server request to be sent\n", 0);
+		u2021201780_printf("\t-d\tset daylight savings time on\n", 0);
+		u2021201780_printf("\t-s\tset standard time (not daylight savings)\n", 0);
+		u2021201780_printf("\t-a\tset daylight savings to automatic\n", 0);
+		u2021201780_printf("\t--help\tdisplay this help and exit\n", 0);
 		return 0;
 	}
 
 	/* Check argument count */
 
 	if (nargs > 2) {
-		fprintf(stderr, "%s: too many arguments\n", args[0]);
-		fprintf(stderr, "Try '%s --help' for more information\n",
-			args[0]);
+		u2021201780_fprintf(stderr, "%s: too many arguments\n", 1, args[0]);
+		u2021201780_fprintf(stderr, "Try '%s --help' for more information\n",
+			1, args[0]);
 		return 1;
 	}
 
@@ -48,25 +48,25 @@ shellcmd xsh_date(int nargs, char *args[]) {
 		} else if (strncmp(args[1], "-a", 3) == 0) {
 			Date.dt_daylight = DATE_DST_AUTO;
 		} else {
-			fprintf(stderr, "%s: invalid argument\n", args[0]);
-			fprintf(stderr,
+			u2021201780_fprintf(stderr, "%s: invalid argument\n", 1, args[0]);
+			u2021201780_fprintf(stderr,
 				"Try '%s --help' for more information\n",
-				args[0]);
+				1, args[0]);
 			return 1;
 		}
 	}
 
-	/*
-	retval = gettime(&now);
-	if (retval == SYSERR) {
-		fprintf(stderr,
-			"%s: could not obtain the current date\n",
-			args[0]);
-		return 1;
-	}
-	ascdate(now, datestr);
-	printf("%s\n", datestr);
-	*/
-	printf("Unsupported\n");
+
+//	retval = gettime(&now);
+//	if (retval == SYSERR) {
+//		u2021201780_fprintf(stderr,
+//			"%s: could not obtain the current date\n",
+//			1, args[0]);
+//		return 1;
+//	}
+//	ascdate(now, datestr);
+//	u2021201780_printf("%s\n", 1, datestr);
+
+	u2021201780_printf("Unsupported\n", 0);
 	return 0;
 }

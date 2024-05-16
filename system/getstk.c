@@ -23,7 +23,7 @@ char *getstk(
     nbytes = roundpg(nbytes);
 	uint32 npages = nbytes / PAGE_SIZE;
 
-	char *old_log = getmem(nbytes) ,*new_log;
+	char *old_log = (char *)getmem(nbytes) ,*new_log;
 	if (is_kernel) new_log = (char *)&end + 2 * PAGE_SIZE;
 	else new_log = (char *)maxheap;
 	new_log -= nbytes;

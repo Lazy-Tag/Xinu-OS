@@ -17,21 +17,21 @@ shellcmd xsh_memstat(int nargs, char *args[])
 	/* For argument '--help', emit help about the 'memstat' command	*/
 
 	if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {
-		printf("use: %s \n\n", args[0]);
-		printf("Description:\n");
-		printf("\tDisplays the current memory use and prints the\n");
-		printf("\tfree list.\n");
-		printf("Options:\n");
-		printf("\t--help\t\tdisplay this help and exit\n");
+		u2021201780_printf("use: %s \n\n", 1, args[0]);
+		u2021201780_printf("Description:\n", 0);
+		u2021201780_printf("\tDisplays the current memory use and prints the\n", 0);
+		u2021201780_printf("\tfree list.\n", 0);
+		u2021201780_printf("Options:\n", 0);
+		u2021201780_printf("\t--help\t\tdisplay this help and exit\n", 0);
 		return 0;
 	}
 
 	/* Check for valid number of arguments */
 
 	if (nargs > 1) {
-		fprintf(stderr, "%s: too many arguments\n", args[0]);
-		fprintf(stderr, "Try '%s --help' for more information\n",
-				args[0]);
+		u2021201780_fprintf(stderr, "%s: too many arguments\n", 1, args[0]);
+		u2021201780_fprintf(stderr, "Try '%s --help' for more information\n",
+				1, args[0]);
 		return 1;
 	}
 
@@ -53,15 +53,15 @@ static void printFreeList(void)
 
 	/* Output a heading for the free list */
 
-	printf("Free List:\n");
-	printf("Block address  Length (dec)  Length (hex)\n");
-	printf("-------------  ------------  ------------\n");
+	u2021201780_printf("Free List:\n", 0);
+	u2021201780_printf("Block address  Length (dec)  Length (hex)\n", 0);
+	u2021201780_printf("-------------  ------------  ------------\n", 0);
 	
 	for (block = memlist.mnext; block != NULL; block = block->mnext) {
-		printf("  0x%08x    %9d     0x%08x\n", block,
+		u2021201780_printf("  0x%08x    %9d     0x%08x\n", 3, block,
 			block->mlength, block->mlength);
 	}
-	printf("\n");
+	u2021201780_printf("\n", 0);
 }
 
 extern void start(void);
@@ -105,9 +105,9 @@ static void printMemUse(void)
 
 	/* Output statistics on current memory use */
 
-	printf("Current system memory statistics:\n");
-	printf("---------------------------------\n");
-	printf("%10d bytes (0x%08x) of Xinu code\n", code, code);
-	printf("%10d bytes (0x%08x) of allocated stack space\n", stack, stack);
-	printf("%10d bytes (0x%08x) of available kernel heap space\n\n", kheap, kheap);
+	u2021201780_printf("Current system memory statistics:\n", 0);
+	u2021201780_printf("---------------------------------\n", 0);
+	u2021201780_printf("%10d bytes (0x%08x) of Xinu code\n", 2, code, code);
+	u2021201780_printf("%10d bytes (0x%08x) of allocated stack space\n", 2, stack, stack);
+	u2021201780_printf("%10d bytes (0x%08x) of available kernel heap space\n\n", 2, kheap, kheap);
 }

@@ -34,7 +34,7 @@ uint16	girmask;
 #define	EOI	0x20		/* non-specific end of interrupt	*/
 
 //Lab3 2021201780
-#define NID		59	/* Number of interrupt descriptors	*/
+#define NID		61	/* Number of interrupt descriptors	*/
 #define	IGDT_TRAPG	15	/* Trap Gate				*/
 #define	IGDT_INTRG	0xe	/* Interrupt Gate			*/
 
@@ -59,7 +59,7 @@ int32	initevec()
 	/*Lab3 2021201780:Begin*/
 	for(i = 0; i < NID; i++) {
 		if(i < history_NID)
-			set_evec(i, defevec[i], 0);
+            set_evec(i, defevec[i], 0);
 		else
 			set_evec(i, defevec[i], 3);
 	}
@@ -74,7 +74,7 @@ int32	initevec()
 	girmask = 0xfffb;	/* Leave bit 2 enabled for IC cascade */
 
 	/* Initialize the 8259A interrupt controllers */
-	
+
 	/* Master device */
 	outb(ICU1, 0x11);	/* ICW1: icw4 needed		*/
 	outb(ICU1+1, 0x20);	/* ICW2: base ivec 32		*/

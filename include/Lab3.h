@@ -20,9 +20,6 @@
 #define GDT_TSS 7
 #define history_NID 48
 
-/* in file Lab3_ucreate.c */
-extern	pid32	ucreate(void * , uint32, int, char *, uint32, uint32 *);
-
 /* in file Lab3_ret_k2u.S */
 extern	void	k2021201780_ret_k2u(void);
 

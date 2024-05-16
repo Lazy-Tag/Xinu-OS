@@ -216,11 +216,16 @@ _Xint13:
 
 	.globl  _Xint14			/* Page fault			*/
 _Xint14:
+    /* Lab4 2021201780:Begin */
 	pushal
-	movl	%esp, %eax
-	pushl	%eax
-	pushl	$14
-	jmp	Xtrap
+	pushl 0x24(%esp)
+	movl 0x34(%esp), %edi
+
+	pushl %edi
+	call _do_stk_expand
+    pop %edi
+	ret
+	/* Lab4 2021201780:End */
 
 	.globl  _Xint15			/* (reserved)			*/
 _Xint15:
@@ -555,11 +560,41 @@ _Xint51:
 	movw %bx, %fs
 	movw %bx, %gs
 
-	push %edi
-    call k2021201780_create
-    pop %edi
-    pop %ebx
+    addl $0x10, %edi
+    movl (%edi), %eax
+    movl %eax, %ebx
+    imull $4, %eax
+    addl %eax, %edi
+L12:
+	testl %eax, %eax
+	je L11
+	pushl (%edi)
+	subl $4, %edi
+	subl $4, %eax
+	jmp L12
+L11:
+	pushl %ebx
+	subl $4, %edi
+	pushl (%edi)
+	subl $4, %edi
+	pushl (%edi)
+	subl $4, %edi
+	pushl (%edi)
+	subl $4, %edi
+	pushl (%edi)
 
+    call create
+
+    pop %edi
+    pop %edi
+    pop %edi
+    pop %edi
+    pop %edi
+
+    imull $4, %edi
+    addl %edi, %esp
+
+    pop %ebx
     popl %gs
 	popl %fs
 	popl %es
@@ -769,6 +804,58 @@ L10:
     popl %es
     popl %ds
     iret
+
+    .globl  _Xint59
+_Xint59:
+    pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+    push %ebx
+	movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+
+	push %edi
+	call getmem
+    pop %edi
+
+	pop %ebx
+    popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+   .globl  _Xint60
+_Xint60:
+    pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+    push %ebx
+	movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+
+	push %esi
+	push %edi
+	call freemem
+	pop %edi
+    pop %esi
+
+	pop %ebx
+    popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
 /*Lab4 2021201780:End*/
 
 
@@ -840,5 +927,8 @@ defevec:
 	.long   _Xint56         /* my interrupt	for receive*/
 	.long   _Xint57         /* my interrupt	for recvclr*/
 	/*Lab3 2021201780:End*/
-	//Lab4 2021201780
+	/*Lab4 2021201780:Begin*/
 	.long   _Xint58
+	.long   _Xint59
+	.long   _Xint60
+	/*Lab4 2021201780:End*/

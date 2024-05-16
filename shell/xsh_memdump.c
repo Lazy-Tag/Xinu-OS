@@ -28,26 +28,26 @@ shellcmd xsh_memdump(int nargs, char *args[])
 	/* For argument '--help', emit help about the 'memdump' command	*/
 
 	if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {
-		printf("Use: %s [-f] Address Length\n\n", args[0]);
-		printf("Description:\n");
-		printf("\tDumps Length bytes of memory begining at the\n");
-		printf("\tspecified starting address (both the address\n");
-		printf("\tand length can be specified in decimal or hex)\n");
-		printf("Options:\n");
-		printf("\t-f         ignore sanity checks for addresses\n");
-		printf("\tAddress    memory address at which to start\n");
-		printf("\tLength     the number of bytes to dump\n");
-		printf("\t--help     display this help and exit\n");
+		u2021201780_printf("Use: %s [-f] Address Length\n\n", 1, args[0]);
+		u2021201780_printf("Description:\n", 0);
+		u2021201780_printf("\tDumps Length bytes of memory begining at the\n", 0);
+		u2021201780_printf("\tspecified starting address (both the address\n", 0);
+		u2021201780_printf("\tand length can be specified in decimal or hex)\n", 0);
+		u2021201780_printf("Options:\n", 0);
+		u2021201780_printf("\t-f         ignore sanity checks for addresses\n", 0);
+		u2021201780_printf("\tAddress    memory address at which to start\n", 0);
+		u2021201780_printf("\tLength     the number of bytes to dump\n", 0);
+		u2021201780_printf("\t--help     display this help and exit\n", 0);
 		return 0;
 	}
 
 	/* Check for valid number of arguments */
 
 	if (nargs < 3 || nargs > 4) {
-		fprintf(stderr, "%s: incorrect number of arguments\n",
-				args[0]);
-		fprintf(stderr, "Try '%s --help' for more information\n",
-				args[0]);
+		u2021201780_fprintf(stderr, "%s: incorrect number of arguments\n",
+				1, args[0]);
+		u2021201780_fprintf(stderr, "Try '%s --help' for more information\n",
+				1, args[0]);
 		return 1;
 	}
 
@@ -59,20 +59,20 @@ shellcmd xsh_memdump(int nargs, char *args[])
 	}
 
 	if (nargs != 3) {
-		fprintf(stderr, "%s: too few arguments\n", args[0]);
-		fprintf(stderr, "Try '%s --help' for more information\n",
-				args[0]);
+		u2021201780_fprintf(stderr, "%s: too few arguments\n", 1, args[0]);
+		u2021201780_fprintf(stderr, "Try '%s --help' for more information\n",
+				1, args[0]);
 		return 1;
 	}
 
 	if ( (begin=parseval(args[arg])) == 0 ) {
-		fprintf(stderr, "%s: invalid begining address\n",
-				args[0]);
+		u2021201780_fprintf(stderr, "%s: invalid begining address\n",
+				1, args[0]);
 		return 1;
 	}
 	if ( (length =parseval(args[arg+1])) == 0 ) {
-		fprintf(stderr, "%s: invalid length address\n",
-				args[0]);
+		u2021201780_fprintf(stderr, "%s: invalid length address\n",
+				1, args[0]);
 		return 1;
 	}
 
@@ -95,26 +95,26 @@ shellcmd xsh_memdump(int nargs, char *args[])
 
 		chptr = (char *)begin;
 		for (l=0; l<length; l+=16) {
-			printf("%08x: ", begin);
+			u2021201780_printf("%08x: ", 1, begin);
 			addr = (uint32 *)begin;
 			for (i=0; i<4; i++) {
-				printf("%08x ",*addr++);
+				u2021201780_printf("%08x ", 1, *addr++);
 			}
-			printf("  *");
+			u2021201780_printf("  *", 0);
 			for (i=0; i<16; i++) {
 				ch = *chptr++;
 				if ( (ch >= 0x20) && (ch <= 0x7e) ) {
-					printf("%c",ch);
+					u2021201780_printf("%c", 1, ch);
 				} else {
-					printf(".");
+					u2021201780_printf(".", 0);
 				}
 			}
-			printf("*\n");
+			u2021201780_printf("*\n", 0);
 			begin += 16;
 		}
 		return 0;
 	} else {
-		printf("Values are out of range; use -f to force\n");
+		u2021201780_printf("Values are out of range; use -f to force\n", 0);
 	}
 	return 1;
 }

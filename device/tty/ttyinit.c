@@ -62,7 +62,7 @@ devcall	ttyinit(
 	outb((uint32)&uptr->fcr, 0x00);		/* Disable FIFO for now		*/
 
 	/* Register the interrupt handler for the tty device */
-    //Lab3 2021201780
+	//Lab3 2021201780
 	set_evec(devptr->dvirq, (uint32)devptr->dvintr, 0);
 
 	/* Enable interrupts on the device: reset the transmit and	*/

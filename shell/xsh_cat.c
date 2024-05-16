@@ -19,12 +19,12 @@ shellcmd xsh_cat(int nargs, char *args[])
 	/* For argument '--help', emit help about the 'cat' command	*/
 
 	if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {
-		printf("Use: %s [file...]\n\n", args[0]);
-		printf("Description:\n");
-		printf("\twrites contents of files or stdin to stdout\n");
-		printf("Options:\n");
-		printf("\tfile...\tzero or more file names\n");
-		printf("\t--help\t display this help and exit\n");
+		u2021201780_printf("Use: %s [file...]\n\n", 1, args[0]);
+		u2021201780_printf("Description:\n", 0);
+		u2021201780_printf("\twrites contents of files or stdin to stdout\n", 0);
+		u2021201780_printf("Options:\n", 0);
+		u2021201780_printf("\tfile...\tzero or more file names\n", 0);
+		u2021201780_printf("\t--help\t display this help and exit\n", 0);
 		return 0;
 	}
 
@@ -43,7 +43,7 @@ shellcmd xsh_cat(int nargs, char *args[])
 		} else {
 			descr = open(NAMESPACE, argptr, "ro");
 			if (descr == (did32)SYSERR) {
-				fprintf(stderr, "%s: cannot open file %s\n",
+				u2021201780_fprintf(stderr, "%s: cannot open file %s\n", 2,
 					args[0], argptr);
 				return 1;
 			}

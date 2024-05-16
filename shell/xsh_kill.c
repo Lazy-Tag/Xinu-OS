@@ -18,21 +18,21 @@ shellcmd xsh_kill(int nargs, char *args[]) {
 	/* Output info for '--help' argument */
 
 	if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {
-		printf("Usage: %s PID\n\n", args[0]);
-		printf("Description:\n");
-		printf("\tterminates a process\n");
-		printf("Options:\n");
-		printf("\tPID \tthe ID of a process to terminate\n");
-		printf("\t--help\tdisplay this help and exit\n");
+		u2021201780_printf("Usage: %s PID\n\n", 1, args[0]);
+		u2021201780_printf("Description:\n", 0);
+		u2021201780_printf("\tterminates a process\n", 0);
+		u2021201780_printf("Options:\n", 0);
+		u2021201780_printf("\tPID \tthe ID of a process to terminate\n", 0);
+		u2021201780_printf("\t--help\tdisplay this help and exit\n", 0);
 		return OK;
 	}
 
 	/* Check argument count */
 
 	if (nargs != 2) {
-		fprintf(stderr, "%s: incorrect argument\n", args[0]);
-		fprintf(stderr, "Try '%s --help' for more information\n",
-			args[0]);
+		u2021201780_fprintf(stderr, "%s: incorrect argument\n", 1, args[0]);
+		u2021201780_fprintf(stderr, "Try '%s --help' for more information\n",
+			1, args[0]);
 		return SYSERR;
 	}
 
@@ -43,23 +43,23 @@ shellcmd xsh_kill(int nargs, char *args[]) {
 	pid = 0;
 	while(ch != NULLCH) {
 		if ( (ch < '0') || (ch > '9') ) {
-			fprintf(stderr, "%s: non-digit in process ID\n",
-				args[0]);
+			u2021201780_fprintf(stderr, "%s: non-digit in process ID\n",
+				1, args[0]);
 			return 1;
 		}
 		pid = 10*pid + (ch - '0');
 		ch = *chptr++;
 	}
 	if (pid == 0) {
-		fprintf(stderr, "%s: cannot kill the null process\n",
-			args[0]);
+		u2021201780_fprintf(stderr, "%s: cannot kill the null process\n",
+			1, args[0]);
 		return 1;
 	}
 
 	retval = kill(pid);
 	if (retval == SYSERR) {
-		fprintf(stderr, "%s: cannot kill process %d\n",
-			args[0], pid);
+		u2021201780_fprintf(stderr, "%s: cannot kill process %d\n",
+			1, args[0], pid);
 		return 1;
 	}
 	return 0;

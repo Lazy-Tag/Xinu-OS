@@ -95,55 +95,55 @@ status	addargs(
 
 	prptr = &proctab[pid];
 
-	/*Lab4 2020200671:Begin*/
+	/*Lab4 2021201780:Begin*/
 	/* Map stack of the new process to heap */
     pgtab *pgdir = (pgtab *)getheap(sizeof(pgtab));
 	if (pgdir == (pgtab *)SYSERR) {
 		restore(mask);
 		return SYSERR;
 	}
-	fill_pgentry((char *)pgdir, prptr->prpgdir, PT_ENTRY_P | PT_ENTRY_W, FALSE);
+	fill_page_entry((char *)pgdir, prptr->prpgdir, PT_ENTRY_P | PT_ENTRY_W, FALSE);
 
 	pgtab *pgtable = (pgtab *)getheap(sizeof(pgtab));
 	if (pgtable == (pgtab *)SYSERR) {
-		fill_pgentry((char *)pgdir, 0, 0, TRUE);
+		fill_page_entry((char *)pgdir, 0, 0, TRUE);
 		invlpg((void *)pgdir);
 		restore(mask);
 		return SYSERR;
 	}
-	fill_pgentry((char *)pgtable, getaddr(pgdir->entry[0]), PT_ENTRY_P | PT_ENTRY_W, FALSE);
+	fill_page_entry((char *)pgtable, getaddr(pgdir->entry[0]), PT_ENTRY_P | PT_ENTRY_W, FALSE);
 
 	char* kstk = getheap(KERNELSTK);
 	if (kstk == (char *)SYSERR) {
-		fill_pgentry((char *)pgdir, 0, 0, TRUE);
+		fill_page_entry((char *)pgdir, 0, 0, TRUE);
 		invlpg((void *)pgdir);
-		fill_pgentry((char *)pgtable, 0, 0, TRUE);
+		fill_page_entry((char *)pgtable, 0, 0, TRUE);
 		invlpg((void *)pgtable);
 		restore(mask);
 		return SYSERR;
 	}
-	fill_pgentry(kstk, getaddr(pgtable->entry[1 + (uint32)&end / PAGE_SIZE]), PT_ENTRY_P | PT_ENTRY_W, FALSE);
+	fill_page_entry(kstk, getaddr(pgtable->entry[1 + (uint32)&end / PAGE_SIZE]), PT_ENTRY_P | PT_ENTRY_W, FALSE);
 
-	fill_pgentry((char *)pgtable, 0, 0, FALSE);
+	fill_page_entry((char *)pgtable, 0, 0, FALSE);
 	invlpg((void *)pgtable);
 
-	fill_pgentry((char *)pgtable, getaddr(pgdir->entry[1015]), PT_ENTRY_P | PT_ENTRY_W, FALSE);
+	fill_page_entry((char *)pgtable, getaddr(pgdir->entry[USERPG]), PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U, FALSE);
 	char* ustk = getheap(prptr->prstklen);
-	if (ustk == (char *)SYSERR) {
-		fill_pgentry((char *)pgdir, 0, 0, TRUE);
+    if (ustk == (char *)SYSERR) {
+		fill_page_entry((char *)pgdir, 0, 0, TRUE);
 		invlpg((void *)pgdir);
-		fill_pgentry((char *)pgtable, 0, 0, TRUE);
+		fill_page_entry((char *)pgtable, 0, 0, TRUE);
 		invlpg((void *)pgtable);
-		fill_pgentry(kstk, 0, 0, TRUE);
+		fill_page_entry(kstk, 0, 0, TRUE);
 		invlpg((void *)kstk);
 		restore(mask);
 		return SYSERR;
 	}
-	fill_pgentry(ustk, getaddr(pgtable->entry[1023]), PT_ENTRY_P | PT_ENTRY_W, FALSE);
-	fill_pgentry((char *)pgtable, 0, 0, FALSE);
+	fill_page_entry(ustk, getaddr(pgtable->entry[1023]), PT_ENTRY_P | PT_ENTRY_W, FALSE);
+	fill_page_entry((char *)pgtable, 0, 0, FALSE);
 	invlpg((void *)pgtable);
 
-	if (upload_args((uint32 *)ustk, (uint32 *)(ustk + prptr->prstklen),
+	if (upload_args((uint32 *)ustk, (uint32 *)(ustk + PAGE_SIZE),
 		    prptr->uprstkbase, ntok, tok, tlen, tokbuf, dummy) == SYSERR) {
 			error = TRUE;
 	}
@@ -153,14 +153,14 @@ status	addargs(
 			error = TRUE;
 	}
 
-	fill_pgentry(kstk, 0, 0, FALSE);
+	fill_page_entry(kstk, 0, 0, FALSE);
 	invlpg((void *)kstk);
-	fill_pgentry(ustk, 0, 0, FALSE);
+	fill_page_entry(ustk, 0, 0, FALSE);
 	invlpg((void *)ustk);
-	fill_pgentry((char *)pgdir, 0, 0, FALSE);
+	fill_page_entry((char *)pgdir, 0, 0, FALSE);
 	invlpg((void *)pgdir);
 
 	restore(mask);
 	return error ? SYSERR : OK;
-	/*Lab4 2020200671:End*/
+	/*Lab4 2021201780:End*/
 }

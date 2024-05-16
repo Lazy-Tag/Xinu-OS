@@ -12,7 +12,7 @@ char *getheap(uint32 nbytes) {
 
     nbytes = roundpg(nbytes);
     uint32 npages = nbytes / PAGE_SIZE;
-
+    // Start from minheap
     char *addr_begin = (char *) 0x00C00000;
 
     // Find a free continuous page on heap by first-fit

@@ -19,19 +19,19 @@ shellcmd xsh_uptime(int nargs, char *args[])
 	/* For argument '--help', emit help about the 'uptime' command	*/
 
 	if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {
-		printf("Use: %s\n\n", args[0]);
-		printf("Description:\n");
-		printf("\tDisplays time since the system booted\n");
-		printf("Options:\n");
-		printf("\t--help\t display this help and exit\n");
+		u2021201780_printf("Use: %s\n\n", 1, args[0]);
+		u2021201780_printf("Description:\n", 0);
+		u2021201780_printf("\tDisplays time since the system booted\n", 0);
+		u2021201780_printf("Options:\n", 0);
+		u2021201780_printf("\t--help\t display this help and exit\n", 0);
 		return 0;
 	}
 
 	/* Check for valid number of arguments */
 
 	if (nargs > 1) {
-		fprintf(stderr, "%s: too many arguments\n", args[0]);
-		fprintf(stderr, "Try '%s --help' for more information\n",
+		u2021201780_fprintf(stderr, 1, "%s: too many arguments\n", args[0]);
+		u2021201780_fprintf(stderr, 1, "Try '%s --help' for more information\n",
 				args[0]);
 		return 1;
 	}
@@ -53,23 +53,23 @@ shellcmd xsh_uptime(int nargs, char *args[])
 	mins  = secs/secpermin;
 	secs -= mins*secpermin;
 
-	printf("Xinu has been up ");
+	u2021201780_printf("Xinu has been up ", 0);
 	if (days > 0) {
-		printf(" %d day(s) ", days);
+		u2021201780_printf(" %d day(s) ", 1, days);
 	}
 
 	if (hrs > 0) {
-		printf(" %d hour(s) ", hrs);
+		u2021201780_printf(" %d hour(s) ", 1, hrs);
 	}
 
 	if (mins > 0) {
-		printf(" %d minute(s) ", mins);
+		u2021201780_printf(" %d minute(s) ", 1, mins);
 	}
 
 	if (secs > 0) {
-		printf(" %d second(s) ", secs);
+		u2021201780_printf(" %d second(s) ", 1, secs);
 	}
-	printf("\n");
+	u2021201780_printf("\n", 0);
 
 	return 0;
 }

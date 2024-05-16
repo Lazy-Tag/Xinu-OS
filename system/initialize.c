@@ -102,7 +102,6 @@ local process
 
 startup(void) {
     /* Create a process to execute function main() */
-
     // Lab3 2021201780
     u2021201780_resume(u2021201780_create((void *) main, INITSTK, INITPRIO,
                   "Main process", 0, NULL));

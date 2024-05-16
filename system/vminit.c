@@ -1,4 +1,4 @@
-/* meminit.c - memory bounds and free list init */
+/* vminit.c - memory bounds and free list init */
 
 #include <xinu.h>
 

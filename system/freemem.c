@@ -28,7 +28,7 @@ syscall	freemem(
 
 	for(int i = 0; i < npages; i++) {
 		char* page_log = addr + i * PAGE_SIZE;
-		pfree(fill_pgentry(page_log, 0, 0, TRUE));
+		physical_addr_free(fill_page_entry(page_log, 0, 0, TRUE));
 		invlpg((void *)page_log);
 	}
 	/* Lab4 2021201780:End*/

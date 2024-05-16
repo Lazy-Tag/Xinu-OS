@@ -52,6 +52,7 @@ extern	int	end;			/* End of program		*/
 #define getaddr(x)		((x) & 0xFFFFF000)
 
 #define PT_NENTRY		1024
+#define USERPG 1015
 typedef struct {
 	uint32 entry[PT_NENTRY];
 } pgtab;
