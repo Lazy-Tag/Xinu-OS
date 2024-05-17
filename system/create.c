@@ -66,10 +66,11 @@ pid32 create(
         return SYSERR;
     }
     memset((void *) newptx, 0, PAGE_SIZE);
+
     _pgdir->entry[0] = log2ph((char *) newpt0) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
     _pgdir->entry[1] = pgdir->entry[1];
     _pgdir->entry[2] = log2ph((char *) _pgdir) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
-    _pgdir->entry[USERPG] = log2ph((char *) newptx) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
+    _pgdir->entry[STACK_TABLE] = log2ph((char *) newptx) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
 
 //    kprintf("***initialize kernel stack...***\n");
     saddr = (uint32 *) getstk(KERNELSTK, newpt0, TRUE);
@@ -196,6 +197,7 @@ pid32 create(
 
     prptr->prstkbase = (char *) KSTKBASE;
     prptr->uprstkbase = (char *) USTKBASE;
+
     /*Lab4 2021201780: end */
     restore(mask);
     return pid;

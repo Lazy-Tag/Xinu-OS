@@ -124,11 +124,11 @@ status	addargs(
 	}
 	fill_page_entry(kstk, getaddr(pgtable->entry[1 + (uint32)&end / PAGE_SIZE]), PT_ENTRY_P | PT_ENTRY_W, FALSE);
 
-	fill_page_entry((char *)pgtable, 0, 0, FALSE);
+	fill_page_entry((char *)pgtable, 0, 0, TRUE);
 	invlpg((void *)pgtable);
 
-	fill_page_entry((char *)pgtable, getaddr(pgdir->entry[USERPG]), PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U, FALSE);
-	char* ustk = getheap(prptr->prstklen);
+	fill_page_entry((char *)pgtable, getaddr(pgdir->entry[STACK_TABLE]), PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U, FALSE);
+	char* ustk = getheap(PAGE_SIZE);
     if (ustk == (char *)SYSERR) {
 		fill_page_entry((char *)pgdir, 0, 0, TRUE);
 		invlpg((void *)pgdir);

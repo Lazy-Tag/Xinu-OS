@@ -820,7 +820,7 @@ _Xint59:
 	movw %bx, %gs
 
 	push %edi
-	call getmem
+	call mm_malloc
     pop %edi
 
 	pop %ebx
@@ -844,11 +844,32 @@ _Xint60:
 	movw %bx, %fs
 	movw %bx, %gs
 
-	push %esi
 	push %edi
-	call freemem
+	call mm_free
 	pop %edi
-    pop %esi
+
+	pop %ebx
+    popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+	.globl  _Xint61
+_Xint61:
+    pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+    push %ebx
+	movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+
+	call mem_init
 
 	pop %ebx
     popl %gs
@@ -928,7 +949,8 @@ defevec:
 	.long   _Xint57         /* my interrupt	for recvclr*/
 	/*Lab3 2021201780:End*/
 	/*Lab4 2021201780:Begin*/
-	.long   _Xint58
-	.long   _Xint59
-	.long   _Xint60
+	.long   _Xint58 /* my interrupt	for add_args*/
+	.long   _Xint59 /* my interrupt	for mm_malloc*/
+	.long   _Xint60 /* my interrupt	for mm_free*/
+	.long   _Xint61 /* my interrupt	for mm_init*/
 	/*Lab4 2021201780:End*/

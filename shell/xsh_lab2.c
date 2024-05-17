@@ -22,12 +22,12 @@ shellcmd xsh_lab2(int argc, char* argv[]) {
         u2021201780_printf("\t-2.3\tlab2 2.2 test\n", 0);
         u2021201780_printf("\t-2.3\tlab2 2.3 test\n", 0);
     } else if (argc < 2) {
-        u2021201780_fprintf(stderr, 1, "too few arguments\n");
-        u2021201780_fprintf(stderr, 1, "Try '%s --help' for more information\n", argv[0]);
+        u2021201780_fprintf(stderr, "too few arguments\n", 0);
+        u2021201780_fprintf(stderr, "Try '%s --help' for more information\n", 1, argv[0]);
         return 1;
     } else if (argc >= 3) {
-        u2021201780_fprintf(stderr, 1, "too many arguments\n");
-        u2021201780_fprintf(stderr, 1, "Try '%s --help' for more information\n", argv[0]);
+        u2021201780_fprintf(stderr, "too many arguments\n", 0);
+        u2021201780_fprintf(stderr, "Try '%s --help' for more information\n", 1, argv[0]);
         return 1;
     }
 

@@ -52,7 +52,9 @@ extern	int	end;			/* End of program		*/
 #define getaddr(x)		((x) & 0xFFFFF000)
 
 #define PT_NENTRY		1024
-#define USERPG 1015
+#define STACK_TABLE 1015
+#define MAX_HEAP (1 << 20)  /* 1MB */
+
 typedef struct {
 	uint32 entry[PT_NENTRY];
 } pgtab;

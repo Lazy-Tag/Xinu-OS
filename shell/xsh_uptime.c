@@ -30,9 +30,9 @@ shellcmd xsh_uptime(int nargs, char *args[])
 	/* Check for valid number of arguments */
 
 	if (nargs > 1) {
-		u2021201780_fprintf(stderr, 1, "%s: too many arguments\n", args[0]);
-		u2021201780_fprintf(stderr, 1, "Try '%s --help' for more information\n",
-				args[0]);
+		u2021201780_fprintf(stderr, "%s: too many arguments\n", 1, args[0]);
+		u2021201780_fprintf(stderr, "Try '%s --help' for more information\n",
+				1, args[0]);
 		return 1;
 	}
 
