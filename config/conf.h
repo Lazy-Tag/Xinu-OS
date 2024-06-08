@@ -25,7 +25,7 @@ extern	struct	dentry	devtab[]; /* one entry per device */
 
 /* Device name definitions */
 
-#define CONSOLE              0	/* type tty      */
+#define CONSOLE              0	/* type kbdvga   */
 #define NULLDEV              1	/* type null     */
 #define NAMESPACE            2	/* type nam      */
 #define RAM0                 3	/* type ram      */
@@ -40,11 +40,11 @@ extern	struct	dentry	devtab[]; /* one entry per device */
 /* Control block sizes */
 
 #define	Nnull	1
-#define	Ntty	1
 #define	Nram	1
 #define	Nlfs	1
 #define	Nlfl	6
 #define	Nnam	1
+#define	Nkbdvga	1
 
 #define NDEVS 11
 
