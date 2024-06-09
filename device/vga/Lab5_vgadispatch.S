@@ -1,19 +1,19 @@
-/* Lab5 kbd_dispatch.S - kbddisp */
+/* Lab5 vgadispatch.S - kbddisp */
 
 #include <icu.s>
 
 		.text
-		.globl  kbd_dispatch
-		.globl	kbd_handler
+		.globl  vgadispatch
+		.globl	vgahandler
 
-kbd_dispatch:
+vgadispatch:
 		pushal			/* Save general-purpose regs.	*/
 		pushfl			/* Save the flags register	*/
 		cli			/* Prevent further interrupts	*/
 		movb	$EOI,%al	/* Clear the interrupt		*/
 		outb	%al,$OCW1_2
 
-		call	kbd_handler	/* Call the handler		*/
+		call	vgahandler	/* Call the handler		*/
 		
 		sti
 		popfl			/* Restore the flags register	*/

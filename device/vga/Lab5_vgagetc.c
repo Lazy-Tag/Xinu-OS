@@ -1,8 +1,8 @@
-/* Lab5_kbd_getc.c - kbd_getc */
+/* Lab5_vgagetc.c - vgagetc */
 
 #include <xinu.h>
 
-devcall kbd_getc(struct dentry *devptr) {
+devcall vgagetc(struct dentry *devptr) {
     /* Wait for a character in the buffer and extract one character	*/
     wait(kbdcb.tyisem);
     char ch = *kbdcb.tyihead++;

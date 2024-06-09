@@ -1,8 +1,8 @@
-/* Lab5_kbd_handler.c - kbd_handler */
+/* Lab5_vgahandler.c - vgahandler */
 
 #include <xinu.h>
 
-void kbd_handler(void) {
+void vgahandler(void) {
     static uint32 shift;
     static uint8 *charcode[] = {normalmap, shiftmap, ctlmap, ctlmap};
 

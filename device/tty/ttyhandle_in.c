@@ -2,9 +2,9 @@
 
 #include <xinu.h>
 
-local	void	erase1(struct ttycblk *, struct uart_csreg *);
-local	void	echoch(char, struct ttycblk *, struct uart_csreg *);
-local	void	eputc(char, struct ttycblk *, struct uart_csreg *);
+void	erase1(struct ttycblk *, struct uart_csreg *);
+void	echoch(char, struct ttycblk *, struct uart_csreg *);
+void	eputc(char, struct ttycblk *, struct uart_csreg *);
 
 /*------------------------------------------------------------------------
  *  ttyhandle_in  -  Handle one arriving char (interrupts disabled)
@@ -110,6 +110,19 @@ void	ttyhandle_in (
 
 		if ( ((ch==typtr->tyierasec) || (ch==typtr->tyierasec2))
 					     && typtr->tyierase) {
+            /* Lab5: 2021201780:Begin */
+            if (kbdcb.tyicursor > 0) {
+                kbdcb.tyicursor--;
+
+                kbdcb.tyitail--;
+                if (kbdcb.tyitail < kbdcb.tyibuff) {
+                    kbdcb.tyitail = &kbdcb.tyibuff[TY_IBUFLEN - 1];
+                }
+                ch = *kbdcb.tyitail;
+                vga_erase(ch < TY_BLANK || ch == 0177);
+            }
+            /* Lab5: 2021201780:End */
+
 			if (typtr->tyicursor > 0) {
 				typtr->tyicursor--;
 				erase1(typtr, csrptr);
@@ -120,6 +133,16 @@ void	ttyhandle_in (
 		/* End of line */
 
 		if ( (ch == TY_NEWLINE) || (ch == TY_RETURN) ) {
+            /* Lab5: 2021201780:Begin */
+            int32 icursor = kbdcb.tyicursor;
+            vga_putc(TY_RETURN, FALSE);
+            vga_putc(TY_NEWLINE, FALSE);
+            *kbdcb.tyitail++ = ch;
+            if (kbdcb.tyitail >= &kbdcb.tyibuff[TY_IBUFLEN]) {
+                kbdcb.tyitail = kbdcb.tyibuff;
+            }
+            kbdcb.tyicursor = 0;
+
 			if (typtr->tyiecho) {
 				echoch(ch, typtr, csrptr);
 			}
@@ -127,9 +150,11 @@ void	ttyhandle_in (
 			if (typtr->tyitail>=&typtr->tyibuff[TY_IBUFLEN]) {
 				typtr->tyitail = typtr->tyibuff;
 			}
-			/* Make entire line (plus \n or \r) available */
+
 			signaln(typtr->tyisem, typtr->tyicursor + 1);
+            signaln(kbdcb.tyisem, icursor + 1);
 			typtr->tyicursor = 0; 	/* Reset for next line	*/
+            /* Lab5: 2021201780:End */
 			return;
 		}
 
@@ -161,8 +186,16 @@ void	ttyhandle_in (
 		}
 
 
-		/* Echo the character */
+		/*Lab5: 2021201780:Begin*/
+        if (ch < TY_BLANK || ch == 0177) {
+            vga_putc(TY_UPARROW, FALSE);
+            vga_putc(ch + 0100, FALSE);
+        } else {
+            vga_putc(ch, FALSE);
+        }
+        /*Lab5: 2021201780:End*/
 
+        /* Echo the character */
 		if (typtr->tyiecho) {
 			echoch(ch, typtr, csrptr);
 		}
@@ -185,7 +218,7 @@ void	ttyhandle_in (
  *  erase1  -  Erase one character honoring erasing backspace
  *------------------------------------------------------------------------
  */
-local	void	erase1(
+void	erase1(
 	  struct ttycblk	*typtr,	/* Ptr to ttytab entry		*/
 	  struct uart_csreg	*csrptr	/* Address of UART's CSRs	*/
 	)
@@ -228,7 +261,7 @@ local	void	erase1(
  *  echoch  -  Echo a character with visual and output crlf options
  *------------------------------------------------------------------------
  */
-local	void	echoch(
+void	echoch(
 	  char	ch,			/* Character to	echo		*/
 	  struct ttycblk *typtr,	/* Ptr to ttytab entry		*/
 	  struct uart_csreg *csrptr	/* Address of UART's CSRs	*/
@@ -249,7 +282,7 @@ local	void	echoch(
  *  eputc  -  Put one character in the echo queue
  *------------------------------------------------------------------------
  */
-local	void	eputc(
+void	eputc(
 	  char	ch,			/* Character to	echo		*/
 	  struct ttycblk *typtr,	/* Ptr to ttytab entry		*/
 	  struct uart_csreg *csrptr	/* Address of UART's CSRs	*/

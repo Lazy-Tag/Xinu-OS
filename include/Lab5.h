@@ -20,35 +20,48 @@ static	uint16	color = 0x0700;
 
 extern	struct	kbdcblk	kbdcb;
 
-extern	uint8	normalmap[256];
-extern	uint8	shiftcode[256];
-extern	uint8	togglecode[256];
-extern	uint8	shiftmap[256];
-extern	uint8	ctlmap[256];
+extern	uchar	normalmap[256];
+extern	uchar	shiftcode[256];
+extern	uchar	togglecode[256];
+extern	uchar	shiftmap[256];
+extern	uchar	ctlmap[256];
 
 /* in file kbdcontrol.c */
 extern	void	vga_init(void);
 extern  devcall vga_putc(char ch, bool8);
 extern	devcall	vga_erase(bool8);
 
-/* in file kbd_dispatch.S */
-extern	interrupt	kbd_dispatch(void);
+/* in file vgadispatch.S */
+extern	interrupt	vgadispatch(void);
 
-/* in file kbd_read.c */
-extern	devcall	kbd_read(struct dentry *, char *, int32);
+/* in file vgaread.c */
+extern	devcall	vgaread(struct dentry *, char *, int32);
 
-/* in file kbd_getc.c */
-extern	devcall	kbd_getc(struct dentry *);
+/* in file vgawrite.c */
+extern	devcall	vgawrite(struct dentry *, char *, int32);
 
-/* in file kbd_putc.c */
-extern	devcall	kbd_putc(struct dentry *, char);
+/* in file vgagetc.c */
+extern	devcall	vgagetc(struct dentry *);
 
-/* in file kbd_handler.c */
-extern	void	kbd_handler(void);
+/* in file vgaputc.c */
+extern	devcall	vgaputc(struct dentry *, char);
 
-/* in file kbd_init.c */
-extern	devcall	kbd_init(void);
+/* in file vgahandler.c */
+extern	void	vgahandler(void);
+
+/* in file vgainit.c */
+extern	devcall	vgainit(void);
 
 /* in file kbdcontrol.c */
 extern void vga_cursor_left(void);
 extern void vga_cursor_right(void);
+
+extern  devcall multiinit(struct dentry *);
+extern  devcall multiputc(struct dentry *, char);
+extern  devcall multiwrite(struct dentry *, char*, int32);
+extern	void	multihandler(void);
+extern  interrupt multidispatch(void);
+
+extern void	erase1(struct ttycblk *, struct uart_csreg *);
+extern void	echoch(char, struct ttycblk *, struct uart_csreg *);
+extern void	eputc(char, struct ttycblk *, struct uart_csreg *);

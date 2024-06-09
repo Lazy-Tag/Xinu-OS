@@ -1,14 +1,14 @@
-/* Lab5 kbd_read.c - kbd_read */
+/* Lab5 vgaread.c - vgaread */
 
 #include <xinu.h>
 
-devcall kbd_read(struct dentry *devptr, char *buff, int32 count) {
+devcall vgaread(struct dentry *devptr, char *buff, int32 count) {
     if (count < 0) {
         return SYSERR;
     }
 
     /* Block until input arrives */
-    int firstch = kbd_getc(devptr);
+    int firstch = vgagetc(devptr);
     if (firstch == EOF) {
         return EOF;
     }
@@ -18,7 +18,7 @@ devcall kbd_read(struct dentry *devptr, char *buff, int32 count) {
     int nread = 1;
     while ((nread < count) &&
            ch != TY_NEWLINE && ch != TY_RETURN) {
-        ch = kbd_getc(devptr);
+        ch = vgagetc(devptr);
         *buff++ = ch;
         nread++;
     }

@@ -68,10 +68,19 @@ nam:
 /* type of keyboard device */
 kbdvga:
 	on kbdvga
-		-i kbd_init	-o ioerr	-c ioerr
-		-r kbd_read 	-g kbd_getc 	-p kbd_putc
-		-w ioerr 	-s ioerr 	-n ioerr
-		-intr kbd_dispatch
+		-i vgainit	-o ioerr	-c ioerr
+		-r vgaread 	-g vgagetc 	-p vgaputc
+		-w vgawrite 	-s ioerr 	-n ioerr
+		-intr vgadispatch
+
+/* type of a multi device */
+multi:
+	on multi
+		-i multiinit	-o ionull	-c ionull
+		-r ttyread 	-g ttygetc 	-p multiputc
+		-w multiwrite -s ioerr 	-n ttycontrol
+		-intr multidispatch
+
 /*Lab5 2021201780:End*/
 
 %%
@@ -81,7 +90,7 @@ kbdvga:
 
    /* Define the console device to be a tty and specify CSR*/
    /* Lab5:2021201780 */
-   CONSOLE is kbdvga  on kbdvga  csr 0001724 -irq 0041
+   CONSOLE is multi  on multi  csr 0001770 -irq 0044
 
    /* Define a null device */
    NULLDEV is null on nothing

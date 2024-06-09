@@ -18,7 +18,7 @@ devcall	ttyread(
 	int32	firstch;		/* First input character on line*/
 	char	ch;			/* Next input character		*/
 
-	if (count < 0) {
+    if (count < 0) {
 		return SYSERR;
 	}
 	typtr= &ttytab[devptr->dvminor];
