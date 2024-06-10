@@ -1,4 +1,4 @@
-/* kbdwrite.c - kbdwrite */
+/* vgawrite.c - vgawrite */
 
 #include <xinu.h>
 

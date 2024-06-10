@@ -22,8 +22,8 @@ struct	dentry	devtab[NDEVS] =
 /* CONSOLE is multi */
 	{ 0, 0, "CONSOLE",
 	  (void *)multiinit, (void *)ionull, (void *)ionull,
-	  (void *)ttyread, (void *)multiwrite, (void *)ioerr,
-	  (void *)ttygetc, (void *)multiputc, (void *)ttycontrol,
+	  (void *)vgaread, (void *)multiwrite, (void *)ioerr,
+	  (void *)vgagetc, (void *)multiputc, (void *)ttycontrol,
 	  (void *)0x3f8, (void *)multidispatch, 36 },
 
 /* NULLDEV is null */

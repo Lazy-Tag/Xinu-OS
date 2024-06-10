@@ -24,10 +24,7 @@ shellcmd xsh_lab5(int nargs, char *args[]) {
 
 //    u2021201780_printf("Test screen overflow\n", 0);
 //    for (int i = 0; i < 30; i ++ ) {
-//        u2021201780_printf("%d: ", 1, i);
-//        for(int j = 0; j < 26; j++)
-//            u2021201780_printf("%c", 1, 'a' + j);
-//        u2021201780_printf("\n", 0);
+//        u2021201780_printf("%2d: abc123!@#$^&*()+-\t\n", 1, i);
 //    }
 
     return 0;

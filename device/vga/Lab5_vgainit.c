@@ -2,7 +2,7 @@
 
 #include <xinu.h>
 
-struct kbdcblk kbdcb;
+struct vgacblk kbdcb;
 
 devcall vgainit() {
     set_evec(0x21, (uint32) vgadispatch, 0);
@@ -10,5 +10,7 @@ devcall vgainit() {
     kbdcb.tyisem = semcreate(0);
     kbdcb.tyicursor = 0;
 
-    vga_init();
+    memset(*disp, 0, sizeof(*disp));
+    set_cursor(0);
+    (*disp)[0][0] = ' ' | color;
 }

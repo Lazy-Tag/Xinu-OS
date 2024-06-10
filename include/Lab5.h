@@ -1,6 +1,6 @@
 #include <kbd.h>
 
-struct	kbdcblk {
+struct	vgacblk {
 	char	*tyihead;		/* Next input char to read	*/
 	char	*tyitail;		/* Next slot for arriving char	*/
 	char	tyibuff[TY_IBUFLEN];	/* Input buffer			*/
@@ -18,7 +18,7 @@ struct	kbdcblk {
 static	uint16	(*disp)[KBD_HEIGHT][KBD_WIDTH] = 0xB8000;
 static	uint16	color = 0x0700;
 
-extern	struct	kbdcblk	kbdcb;
+extern	struct	vgacblk	kbdcb;
 
 extern	uchar	normalmap[256];
 extern	uchar	shiftcode[256];
@@ -27,7 +27,6 @@ extern	uchar	shiftmap[256];
 extern	uchar	ctlmap[256];
 
 /* in file kbdcontrol.c */
-extern	void	vga_init(void);
 extern  devcall vga_putc(char ch, bool8);
 extern	devcall	vga_erase(bool8);
 
@@ -52,16 +51,23 @@ extern	void	vgahandler(void);
 /* in file vgainit.c */
 extern	devcall	vgainit(void);
 
-/* in file kbdcontrol.c */
+/* in file vgacontrol.c */
 extern void vga_cursor_left(void);
 extern void vga_cursor_right(void);
 
+/* in file multiinit.c */
 extern  devcall multiinit(struct dentry *);
+
+/* in file multiputc.c */
 extern  devcall multiputc(struct dentry *, char);
+
+/* in file multiwrite.c */
 extern  devcall multiwrite(struct dentry *, char*, int32);
-extern	void	multihandler(void);
+
+/* in file multidispatch.c */
 extern  interrupt multidispatch(void);
 
+/* in file ttyhandle_in.c */
 extern void	erase1(struct ttycblk *, struct uart_csreg *);
 extern void	echoch(char, struct ttycblk *, struct uart_csreg *);
 extern void	eputc(char, struct ttycblk *, struct uart_csreg *);

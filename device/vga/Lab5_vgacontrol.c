@@ -1,16 +1,8 @@
-/* kbdcontrol.c - vga operation */
+/* vgacontrol.c - vga operation */
 
 #include <xinu.h>
 
-local bool8
-
-vga_shellbanner(char);
-
-void vga_init(void) {
-    memset(*disp, 0, sizeof(*disp));
-    set_cursor(0);
-    (*disp)[0][0] = ' ' | color;
-}
+bool8 vga_shellbanner(char);
 
 devcall vga_putc(char ch, bool8 force) {
     uint16 cursor_pos, row, col;
@@ -93,9 +85,12 @@ devcall vga_erase(bool8 invisible) {
             col = KBD_WIDTH - 1;
         }
     }
+    // Update cursor position
     set_cursor(row * KBD_WIDTH + col);
+    // Set the character at the new cursor position to a space with the current color
     (*disp)[row][col] = ' ' | color;
-    // erase ^
+
+    // If invisible is true, recursively erase the previous character
     if (invisible) {
         vga_erase(FALSE);
     }
@@ -112,20 +107,24 @@ bool8 vga_shellbanner(char ch) {
 
     *it++ = ch;
 
+    // Return if the character is not 'm', indicating an incomplete sequence
     if (ch != 'm') return TRUE;
 
-    if (buffer[3] == 'm') {           //BAN9 fir
+    // Handle single digit opcode
+    if (buffer[3] == 'm') {           // BAN9 first digit
         opcode = buffer[2] - '0';
         if (opcode == 0)
-            color = 0x0700;
+            color = 0x0700;           // Reset color
         else if (opcode == 1)
-            color |= 0x0800;
-    } else if (buffer[4] == 'm') {    //BAN0 & BAN9 sec
+            color |= 0x0800;          // Set bold
+    }
+    // Handle two digit opcode
+    else if (buffer[4] == 'm') {      // BAN0 & BAN9 second digit
         opcode = (buffer[2] - '0') * 10 + (buffer[3] - '0');
         if (opcode >= 30 && opcode <= 37)
-            color = (color & 0xF8FF) | (color_map[opcode - 30] << 8);
+            color = (color & 0xF8FF) | (color_map[opcode - 30] << 8);   // Set text color
         else if (opcode >= 40 && opcode <= 47)
-            color = (color & 0x0FFF) | (color_map[opcode - 40] << 12);
+            color = (color & 0x0FFF) | (color_map[opcode - 40] << 12);  // Set background color
     }
     it = buffer;
     return FALSE;

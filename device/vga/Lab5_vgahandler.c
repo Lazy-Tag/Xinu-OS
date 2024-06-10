@@ -6,6 +6,14 @@ void vgahandler(void) {
     static uint32 shift;
     static uint8 *charcode[] = {normalmap, shiftmap, ctlmap, ctlmap};
 
+    struct  dentry *devptr;   /* Address of device control blk*/
+    struct ttycblk    *typtr;       /* Pointer to ttytab entry */
+    struct uart_csreg *csrptr;    /* Address of UART's CSR   */
+
+    devptr = (struct dentry *) &devtab[CONSOLE];
+    csrptr = (struct uart_csreg *) devptr->dvcsr;
+    typtr = &ttytab[ devptr->dvminor ];
+
     uint32 st, data, c;
     int32 avail;
 
@@ -55,6 +63,12 @@ void vgahandler(void) {
     c = charcode[shift & (CTL | SHIFT)][data];
     if (!c) return;
 
+    if ((c == TY_RETURN) && typtr->tyicrlf) {
+       c = TY_NEWLINE;
+    }
+
+    typtr->tyoheld = FALSE;    /* Any other char starts output */
+
     if (c == TY_BACKSP || c == TY_BACKSP2) {
         if (kbdcb.tyicursor > 0) {
             kbdcb.tyicursor--;
@@ -66,6 +80,11 @@ void vgahandler(void) {
             c = *kbdcb.tyitail;
             vga_erase(c < TY_BLANK || c == 0177);
         }
+
+        if (typtr->tyicursor > 0) {
+            typtr->tyicursor--;
+            erase1(typtr, csrptr);
+        }
         return;
     } else if (c == TY_NEWLINE || c == TY_RETURN) {
         int32 icursor = kbdcb.tyicursor;
@@ -76,16 +95,18 @@ void vgahandler(void) {
             kbdcb.tyitail = kbdcb.tyibuff;
         }
         kbdcb.tyicursor = 0;
-        signaln(kbdcb.tyisem, icursor + 1);
-        return;
-    } else if (c == TY_TAB) {
-        vga_putc(TY_UPARROW, FALSE);
-        vga_putc('I', FALSE);
-        *kbdcb.tyitail++ = '\t';
-        kbdcb.tyicursor++;
-        if (kbdcb.tyitail >= &kbdcb.tyibuff[TY_IBUFLEN]) {
-            kbdcb.tyitail = kbdcb.tyibuff;
+
+        if (typtr->tyiecho) {
+            echoch(c, typtr, csrptr);
         }
+        *typtr->tyitail++ = c;
+        if (typtr->tyitail>=&typtr->tyibuff[TY_IBUFLEN]) {
+            typtr->tyitail = typtr->tyibuff;
+        }
+        /* Make entire line (plus \n or \r) available */
+        signaln(kbdcb.tyisem, icursor + 1);
+        signaln(typtr->tyisem, typtr->tyicursor + 1);
+        typtr->tyicursor = 0;   /* Reset for next line */
         return;
     } else if (c == TY_ESC) return;
 
@@ -109,10 +130,20 @@ void vgahandler(void) {
     } else {
         vga_putc(c, FALSE);
     }
+    echoch(c, typtr, csrptr);
 
     *kbdcb.tyitail++ = c;
     kbdcb.tyicursor++;
     if (kbdcb.tyitail >= &kbdcb.tyibuff[TY_IBUFLEN]) {
         kbdcb.tyitail = kbdcb.tyibuff;
+    }
+
+    typtr->tyicursor++;
+    *typtr->tyitail++ = c;
+
+    /* Wrap around if needed */
+
+    if (typtr->tyitail >= &typtr->tyibuff[TY_IBUFLEN]) {
+        typtr->tyitail = typtr->tyibuff;
     }
 }

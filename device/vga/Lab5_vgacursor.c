@@ -1,4 +1,4 @@
-/* kbdcursor.c - cursor operation*/
+/* vgacursor.c - cursor operation*/
 #include <xinu.h>
 
 void set_cursor(uint16 pos) {
@@ -18,7 +18,6 @@ uint16 get_cursor(void) {
 	return pos;
 }
 
-// Move the cursor to the left
 void vga_cursor_left(void) {
     uint16 pos = get_cursor();
     if (pos > 0) {
@@ -26,7 +25,6 @@ void vga_cursor_left(void) {
     }
 }
 
-// Move the cursor to the right
 void vga_cursor_right(void) {
     uint16 pos = get_cursor();
     if (pos < KBD_WIDTH * KBD_HEIGHT - 1) {

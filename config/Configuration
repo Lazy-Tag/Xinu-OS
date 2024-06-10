@@ -77,7 +77,7 @@ kbdvga:
 multi:
 	on multi
 		-i multiinit	-o ionull	-c ionull
-		-r ttyread 	-g ttygetc 	-p multiputc
+		-r vgaread 	-g vgagetc 	-p multiputc
 		-w multiwrite -s ioerr 	-n ttycontrol
 		-intr multidispatch
 

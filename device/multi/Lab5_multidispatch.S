@@ -16,7 +16,7 @@ multidispatch:
 		movb	$EOI,%al	/* Clear the interrupt		*/
 		outb	%al,$OCW1_2
 
-        call multihandler
+        call vgahandler
         call ttyhandler
 
 		sti
