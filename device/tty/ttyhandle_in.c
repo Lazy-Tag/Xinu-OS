@@ -210,6 +210,12 @@ void	ttyhandle_in (
 		if (typtr->tyitail >= &typtr->tyibuff[TY_IBUFLEN]) {
 			typtr->tyitail = typtr->tyibuff;
 		}
+
+        *kbdcb.tyitail++ = ch;
+        kbdcb.tyicursor++;
+        if (kbdcb.tyitail >= &kbdcb.tyibuff[TY_IBUFLEN]) {
+            kbdcb.tyitail = kbdcb.tyibuff;
+        }
 		return;
 	}
 }
