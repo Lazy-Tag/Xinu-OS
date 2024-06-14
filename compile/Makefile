@@ -36,6 +36,7 @@ REBUILDFLAGS	=	-s $(TOPDIR)/system  debug.c		\
 			-s $(TOPDIR)/device/lfs			\
 			-s $(TOPDIR)/device/vga			\
 			-s $(TOPDIR)/device/multi			\
+			-s $(TOPDIR)/device/disk			\
 			-s $(TOPDIR)/shell  
 
 INCLUDE		=	-I$(TOPDIR)/include
