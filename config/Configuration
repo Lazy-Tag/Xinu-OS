@@ -83,6 +83,15 @@ multi:
 
 /*Lab5 2021201780:End*/
 
+/*Lab6 2021201780:Begin*/
+disk:
+	on top
+		-i diskinit  -o ionull   -c ionull
+		-r diskread  -g diskgetc -p diskputc
+		-w diskwrite -s diskseek -n ionull
+		-intr ionull
+/*Lab6 2021201780:End*/
+
 %%
 
 /* Actual device declarations that each give the name of a device that	*/
@@ -106,6 +115,8 @@ multi:
    LFILESYS is lfs on ram
 
    /* Define local file pseudo-devices (multiple per system) */
+
+   DISK is disk on top csr 0000760
 
    LFILE0 is lfl on lfs
    LFILE1 is lfl on lfs

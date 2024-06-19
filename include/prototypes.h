@@ -399,7 +399,6 @@ extern	devcall	ttyread(struct dentry *, char *, int32);
 /* in file ttywrite.c */
 extern	devcall	ttywrite(struct dentry *, char *, int32);
 
-
 /* in file unsleep.c */
 extern	syscall	unsleep(pid32);
 

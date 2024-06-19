@@ -1,4 +1,4 @@
-/* k2021201780_printf.S - printf (for x86) */
+/* u2021201780_printf.S - printf (for x86) */
     .globl	u2021201780_printf
 
 u2021201780_printf:

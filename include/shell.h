@@ -15,15 +15,14 @@
 
 //Lab5 2021201780
 #define	SHELL_BAN0	"\033[31m\033[1m"
-#define SHELL_BAN1      "------------------------------------------"
-#define SHELL_BAN2      "   __    __   _____    _   _    _    _    "
-#define SHELL_BAN3      "   \\ \\  / /  |__ __|  | \\ | |  | |  | |   "
-#define SHELL_BAN4      "    \\ \\/ /     | |    |  \\| |  | |  | |   "
-#define SHELL_BAN5      "    / /\\ \\    _| |_   | \\   |  | |  | |   "
-#define SHELL_BAN6      "   / /  \\ \\  |     |  | | \\ |  \\  --  /   "
-#define SHELL_BAN7      "   --    --   -----    -   -     ----     "
-#define SHELL_BAN8      "------------------------------------------"
-#define	SHELL_BAN9	"\033[0m\n"
+#define SHELL_BAN1      "--------------------------------------------------------"
+#define SHELL_BAN2 "    __      ____   ______ ___   ___ _______  ____    ______                       "
+#define SHELL_BAN3 "   / /     /   |  /_____/ \\  \\/  / /__  __/ /   |   / ____/                       "
+#define SHELL_BAN4 "  / /     / /| |   /  /    \\   /     / /   / /| |  / / __                         "
+#define SHELL_BAN5 " / /___  / ___ |  /  /__   /  /     / /   / ___ | / /_/ /                         "
+#define SHELL_BAN6 "/_____/ /_/  |_/ /_____/  /__/     /_/   /_/  |_/ \\____/                          "
+#define SHELL_BAN7      "-------------------------------------------------------"
+#define	SHELL_BAN8	"\033[0m\n"
 
 /* Messages shell displays for user */
 

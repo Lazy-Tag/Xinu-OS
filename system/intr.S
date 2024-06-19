@@ -879,6 +879,91 @@ _Xint61:
 	iret
 /*Lab4 2021201780:End*/
 
+/*Lab6 2021201780:Begin*/
+    .globl  _Xint62
+_Xint62:
+    pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+    push %ebx
+	movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+	push %esi
+	push %edi
+
+	call seek
+
+	pop %edi
+	pop %esi
+
+	pop %ebx
+    popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+    .globl  _Xint63
+_Xint63:
+    pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+    push %ebx
+	movl $(0x2 << 3), %ebx
+	movw %bx, %ds
+	movw %bx, %es
+	movw %bx, %fs
+	movw %bx, %gs
+	push %esi
+	push %edi
+
+	call k2021201780_load_code
+
+	pop %edi
+	pop %esi
+
+	pop %ebx
+    popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+
+	.globl  _Xint64
+_Xint64:
+	pushl %ds
+	pushl %es
+	pushl %fs
+	pushl %gs
+
+	movl $(0x2 << 3), %eax
+	movw %ax, %ds
+	movw %ax, %es
+	movw %ax, %fs
+	movw %ax, %gs
+
+    push %edx
+	push %esi
+	push %edi
+	call write
+    pop %edi
+    pop %esi
+    pop %edx
+
+	popl %gs
+	popl %fs
+	popl %es
+	popl %ds
+	iret
+/*Lab6 2021201780:End*/
+
 
 /*------------------------------------------------------------------------
  * _Xint? - array of exception/interrupt entry points that are
@@ -954,3 +1039,7 @@ defevec:
 	.long   _Xint60 /* my interrupt	for mm_free*/
 	.long   _Xint61 /* my interrupt	for mm_init*/
 	/*Lab4 2021201780:End*/
+	// Lab6 2021201780
+	.long   _Xint62 /* my interrupt	for seek*/
+	.long   _Xint63 /* my interrupt	for load code*/
+	.long   _Xint64 /* my interrupt	for write*/

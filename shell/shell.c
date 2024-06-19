@@ -26,7 +26,10 @@ const struct cmdent cmdtab[] = {
         {"lab2",    FALSE, xsh_lab2},
         {"lab3",    FALSE, xsh_lab3},
         {"lab4",    FALSE, xsh_lab4},
-        {"lab5",    FALSE, xsh_lab5}
+        {"lab5",    FALSE, xsh_lab5},
+        {"ls",      FALSE, xsh_lab6_ls},
+        {"exec",    FALSE, xsh_lab6_exec},
+        {"fcat",    FALSE, xsh_lab6_fcat}
 };
 
 uint32 ncmd = sizeof(cmdtab) / sizeof(struct cmdent);
@@ -87,9 +90,9 @@ process shell(
     /* Print shell banner and startup message */
 
     // Lab3 2021201780
-    u2021201780_fprintf(dev, "\n\n%s%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n", 10,
+    u2021201780_fprintf(dev, "\n\n%s%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n", 9,
                         SHELL_BAN0, SHELL_BAN1, SHELL_BAN2, SHELL_BAN3, SHELL_BAN4,
-                        SHELL_BAN5, SHELL_BAN6, SHELL_BAN7, SHELL_BAN8, SHELL_BAN9);
+                        SHELL_BAN5, SHELL_BAN6, SHELL_BAN7, SHELL_BAN8);
 
     // Lab3 2021201780
     u2021201780_fprintf(dev, "%s\n\n", 1, SHELL_STRTMSG);

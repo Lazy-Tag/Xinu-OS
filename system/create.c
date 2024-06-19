@@ -67,6 +67,23 @@ pid32 create(
     }
     memset((void *) newptx, 0, PAGE_SIZE);
 
+    /*Lab6 2021201780:begin */
+    if ((uint32)funcaddr >> 22) {
+        uint32 dir = (uint32)funcaddr >> 22;
+        pgtab *pgtable = (pgtab *)(0x00800000 | (dir << 12));
+        pgtab *newpty = (pgtab *) getmem(PAGE_SIZE);
+        if (newpty == (pgtab *) SYSERR) {
+            freemem((char *) _pgdir, PAGE_SIZE);
+            freemem((char *) newpt0, PAGE_SIZE);
+            freemem((char *) newptx, PAGE_SIZE);
+            restore(mask);
+            return SYSERR;
+        }
+        memcpy((void *) newpty, (char*) pgtable, PAGE_SIZE);
+        _pgdir->entry[dir] = log2ph((char *) newpty) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
+    }
+    /*Lab6 2021201780:end */
+
     _pgdir->entry[0] = log2ph((char *) newpt0) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;
     _pgdir->entry[1] = pgdir->entry[1];
     _pgdir->entry[2] = log2ph((char *) _pgdir) | PT_ENTRY_P | PT_ENTRY_W | PT_ENTRY_U;

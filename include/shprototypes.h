@@ -8,6 +8,12 @@ extern  shellcmd  xsh_lab3      (int32, char *[]);
 extern  shellcmd  xsh_lab4      (int32, char *[]);
 
 extern  shellcmd  xsh_lab5      (int32, char *[]);
+
+extern  shellcmd  xsh_lab6_ls   (int32, char *[]);
+
+extern shellcmd  xsh_lab6_exec  (int32, char *[]);
+
+extern shellcmd  xsh_lab6_fcat (int32, char *[]);
 /* in file xsh_arp.c */
 extern	shellcmd  xsh_arp	(int32, char *[]);
 

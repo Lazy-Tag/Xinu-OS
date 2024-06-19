@@ -25,8 +25,7 @@ void mem_init(void) {
     intmask mask;            /* Saved interrupt mask		*/
 
     mask = disable();
-
-    kprintf("Heap initialize\n");
+    
     /* allocate the storage we will use to model the available VM */
     if ((uint32)(mem_start_brk = (char *) getmem(MAX_HEAP)) == SYSERR) {
         panic("mem_init_vm: malloc error\n");

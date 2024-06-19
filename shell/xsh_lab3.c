@@ -19,12 +19,12 @@ void k2021201780_printf(char *fmt, int count, ...) {
 void k2021201780_fprintf(did32 dev, char *fmt, int count, ...) {
     va_list args;
     va_start(args, count);
-    uint32 data[10];
+    uint32 data[12];
     for (int i = 0; i < count; i ++ )
         data[i] = va_arg(args, uint32);
     fprintf(dev, fmt, data[0], data[1], data[2], data[3],
-                data[4], data[5], data[6], data[7],
-                data[8], data[9]);
+                      data[4], data[5], data[6], data[7],
+                      data[8], data[9], data[10], data[11]);
     va_end(args);
 }
 
