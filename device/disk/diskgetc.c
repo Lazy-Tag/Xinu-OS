@@ -42,6 +42,8 @@ devcall diskgetc(
             }
         }
 
+        if (diskptr->prev_sector != -1)
+            diskflush(devptr);    /* flush the cache (if dirty) */
         insw(0x1F0, (int32) diskptr->cache, 256);
         diskptr->prev_sector = sector;
     }

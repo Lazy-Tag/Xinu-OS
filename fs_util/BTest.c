@@ -49,9 +49,9 @@ int BTest(int argc, char* argv[]) {
 
     char buf[128];
     int len; for (len = 0; argv[2][len]; len++);
-//    useek(DISK, offset);
-//    uread(DISK, buf, 12);
-//    uprintf("Read from disk after write: %s\n", 1, buf);
+    useek(DISK, offset);
+    uread(DISK, buf, 12);
+    uprintf("Read from disk after write: %s\n", 1, buf);
 
     useek(DISK, offset);
     uwrite(DISK, argv[2], len);

@@ -1,7 +1,5 @@
 extern void uprintf(char*, ...);
 
-extern void uprintf(char*, ...);
-
 extern void uread(int, char*, int);
 
 extern void uwrite(int, char*, int);
